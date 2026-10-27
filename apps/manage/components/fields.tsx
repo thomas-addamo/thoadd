@@ -42,6 +42,35 @@ export function FieldInput({ field, value, idPrefix }: { field: Field; value: un
     );
   }
 
+  if (field.kind === "image") {
+    const current = typeof value === "string" && value ? value : null;
+    return (
+      <div className="col-span-full">
+        <Label field={field} htmlFor={id} />
+        <div className="flex flex-wrap items-center gap-4">
+          {current && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={current} alt="" className="size-20 rounded-2xl object-cover shadow-[inset_0_0_0_1px_var(--color-haze)]" />
+          )}
+          <input type="hidden" name={field.name} value={current ?? ""} />
+          <input
+            id={id}
+            type="file"
+            name={`${field.name}__file`}
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="text-[14px] file:mr-3 file:h-10 file:rounded-full file:border file:border-haze file:bg-white file:px-4 file:text-ink"
+          />
+          {current && (
+            <label className="flex items-center gap-2 text-[14px] text-slate">
+              <input type="checkbox" name={`${field.name}__remove`} className="size-4 accent-iris" /> Rimuovi
+            </label>
+          )}
+        </div>
+        {hint}
+      </div>
+    );
+  }
+
   if (field.kind === "boolean") {
     return (
       <label htmlFor={id} className="flex min-h-11 items-center gap-3 self-end text-[15px]">
@@ -67,7 +96,7 @@ export function FieldInput({ field, value, idPrefix }: { field: Field; value: un
     );
   }
 
-  const type = { text: "text", url: "url", email: "email", number: "number", date: "date", tags: "text" }[field.kind];
+  const type = { text: "text", url: "url", email: "email", number: "number", date: "date", tags: "text" }[field.kind as "text"];
   const text = field.kind === "tags" ? ((value as string[] | null) ?? []).join(", ") : value == null ? "" : String(value);
   return (
     <div className={field.kind === "url" ? "md:col-span-2" : undefined}>

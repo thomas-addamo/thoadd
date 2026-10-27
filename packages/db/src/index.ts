@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
 export * from "./schema";
-export { asc, desc, eq } from "drizzle-orm";
+export { asc, count, desc, eq, gte } from "drizzle-orm";
 
 export function getDb() {
   const url = process.env.DATABASE_URL;

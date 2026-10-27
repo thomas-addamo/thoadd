@@ -12,7 +12,7 @@ import {
 
 type Base = { name: string; label: string; required?: boolean; hint?: string };
 export type Field =
-  | (Base & { kind: "text" | "url" | "email" })
+  | (Base & { kind: "text" | "url" | "email" | "image" })
   | (Base & { kind: "localized"; long?: boolean })
   | (Base & { kind: "number" | "date" | "boolean" | "tags" })
   | (Base & { kind: "select"; options: { value: string; label: string }[] });
@@ -63,7 +63,7 @@ export const sections: SectionConfig[] = [
       { name: "summary", label: "Descrizione", kind: "localized", long: true, required: true },
       { name: "url", label: "Link al caso o al sito", kind: "url", hint: "Se c'è, compare \"Leggi il caso\"." },
       { name: "repoUrl", label: "Repository", kind: "url" },
-      { name: "imageUrl", label: "Immagine (URL)", kind: "url", hint: "Vuoto = sfumatura del design." },
+      { name: "imageUrl", label: "Immagine", kind: "image", hint: "JPG, PNG o WebP fino a 4 MB. Senza immagine si usa la sfumatura del design." },
       { name: "technologies", label: "Tecnologie", kind: "tags", hint: "Separate da virgole." },
       { name: "featured", label: "In evidenza", kind: "boolean" },
     ],
@@ -193,7 +193,7 @@ export const profileFields: Field[] = [
   { name: "workMode", label: "Modalità di lavoro", kind: "localized" },
   { name: "city", label: "Città", kind: "text" },
   { name: "email", label: "Email pubblica", kind: "email" },
-  { name: "photoUrl", label: "Foto (URL)", kind: "url", hint: "Vuoto = segnaposto del design." },
+  { name: "photoUrl", label: "Foto", kind: "image", hint: "JPG, PNG o WebP fino a 4 MB, meglio verticale 4:5. Senza foto si usa il segnaposto del design." },
 ];
 
 // Trasforma i campi del modulo nei valori da salvare; restituisce gli errori per campo.
@@ -221,6 +221,10 @@ export function parseFields(fields: Field[], form: FormData) {
       case "tags":
         values[f.name] = raw ? raw.split(",").map((t) => t.trim()).filter(Boolean) : [];
         break;
+      case "image":
+        // Il file nuovo (se c'è) viene caricato da uploadImages; qui resta l'immagine attuale.
+        values[f.name] = form.get(`${f.name}__remove`) === "on" ? null : raw || null;
+        break;
       case "url":
         if (raw && !/^(https?:\/\/|mailto:|#)/.test(raw)) errors.push(`${f.label}: deve iniziare con https://`);
         values[f.name] = raw || null;
@@ -234,4 +238,32 @@ export function parseFields(fields: Field[], form: FormData) {
     if (f.required && f.kind !== "localized" && f.kind !== "boolean" && !raw) errors.push(`${f.label}: campo obbligatorio`);
   }
   return { values, errors };
+}
+
+const imageTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const MAX_IMAGE = 4 * 1024 * 1024;
+
+// Carica su Vercel Blob i file scelti nei campi immagine e mette l'indirizzo nei valori.
+export async function uploadImages(
+  fields: Field[],
+  form: FormData,
+  values: Row,
+  errors: string[],
+  put: (path: string, file: File) => Promise<{ url: string }>,
+) {
+  for (const f of fields) {
+    if (f.kind !== "image") continue;
+    const file = form.get(`${f.name}__file`);
+    if (!(file instanceof File) || file.size === 0) continue;
+    if (!imageTypes.includes(file.type)) {
+      errors.push(`${f.label}: usa un file JPG, PNG, WebP o AVIF`);
+      continue;
+    }
+    if (file.size > MAX_IMAGE) {
+      errors.push(`${f.label}: il file supera 4 MB`);
+      continue;
+    }
+    const ext = file.type.split("/")[1].replace("jpeg", "jpg");
+    values[f.name] = (await put(`immagini/${crypto.randomUUID()}.${ext}`, file)).url;
+  }
 }

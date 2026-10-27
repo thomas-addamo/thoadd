@@ -1,4 +1,4 @@
-import { cvVersions, desc, getDb } from "@thoadd/db";
+import { count, cvDownloads, cvVersions, desc, eq, getDb, gte } from "@thoadd/db";
 import { ConfirmButton } from "@/components/confirm-button";
 import { Notice } from "@/components/fields";
 import { PageTitle } from "@/components/page-title";
@@ -12,11 +12,18 @@ const when = (d: Date) =>
 export default async function Overview({ searchParams }: { searchParams: Promise<{ ok?: string; errore?: string; lingua?: string }> }) {
   const { ok, errore, lingua } = await searchParams;
   const lang = lingua === "en" ? "en" : "it";
-  const versions = await getDb()
-    .select({ id: cvVersions.id, publishedAt: cvVersions.publishedAt })
-    .from(cvVersions)
-    .orderBy(desc(cvVersions.publishedAt))
-    .limit(10);
+  const db = getDb();
+  const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const [versions, [total], [lastMonth], [english]] = await Promise.all([
+    db
+      .select({ id: cvVersions.id, publishedAt: cvVersions.publishedAt, pdf: cvVersions.pdfItUrl })
+      .from(cvVersions)
+      .orderBy(desc(cvVersions.publishedAt))
+      .limit(10),
+    db.select({ n: count() }).from(cvDownloads),
+    db.select({ n: count() }).from(cvDownloads).where(gte(cvDownloads.at, monthAgo)),
+    db.select({ n: count() }).from(cvDownloads).where(eq(cvDownloads.lang, "en")),
+  ]);
   const [current] = versions;
 
   const web = process.env.WEB_URL ?? "https://thoadd.com";
@@ -33,6 +40,13 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           <p className="font-display mt-1 mb-0 text-[24px]">
             {current ? `Versione ${current.id} · ${when(current.publishedAt)}` : "Nessuna pubblicazione: il sito mostra la bozza"}
           </p>
+          {current?.pdf && (
+            <p className="mt-2 mb-0 text-[13px]">
+              <a href={`${web}/cv.pdf`} target="_blank" rel="noopener">thoadd.com/cv.pdf ↗</a>
+              {" · "}
+              <a href={`${web}/cv-en.pdf`} target="_blank" rel="noopener">cv-en.pdf ↗</a>
+            </p>
+          )}
         </div>
         <form action={publish}>
           <ConfirmButton
@@ -42,6 +56,24 @@ export default async function Overview({ searchParams }: { searchParams: Promise
             Pubblica
           </ConfirmButton>
         </form>
+      </section>
+
+      <section className="mb-8 grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "Download del CV", value: total.n },
+          { label: "Ultimi 30 giorni", value: lastMonth.n },
+          { label: "In inglese", value: english.n },
+        ].map((stat) => (
+          <div key={stat.label} className="rounded-[var(--radius-card)] bg-cloud p-6 shadow-[var(--shadow-sheet)]">
+            <p className="m-0 text-[13px] text-slate">{stat.label}</p>
+            <p className="font-display mt-1 mb-0 text-[40px] leading-none font-light">{stat.value}</p>
+          </div>
+        ))}
+        {current && !current.pdf && (
+          <p className="col-span-full m-0 rounded-2xl bg-dawn px-5 py-3 text-[15px]">
+            La versione online non ha ancora il PDF: premi Pubblica per crearlo.
+          </p>
+        )}
       </section>
 
       <section className="mb-8">

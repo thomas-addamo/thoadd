@@ -3,9 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { asc, cvVersions, desc, eq, experiences, getDb, profile } from "@thoadd/db";
-import { loadDraftContent } from "@thoadd/db/content";
+import { loadDraftContent, type CvContent } from "@thoadd/db/content";
+import { renderCvPdf } from "@thoadd/cv-pdf";
+import { put } from "@vercel/blob";
 import { requireSession } from "@/lib/session";
-import { findSection, parseFields, profileFields } from "@/lib/sections";
+import { findSection, parseFields, profileFields, uploadImages } from "@/lib/sections";
+
+const putImage = (path: string, file: File) => put(path, file, { access: "public", contentType: file.type });
 
 const back = (path: string, params: Record<string, string>) => redirect(`${path}?${new URLSearchParams(params)}`);
 
@@ -22,6 +26,7 @@ function sectionOrThrow(slug: string) {
 export async function saveProfile(form: FormData) {
   await requireSession();
   const { values, errors } = parseFields(profileFields, form);
+  await uploadImages(profileFields, form, values, errors, putImage);
   if (errors.length) back("/profilo", { errore: errors.join(" · ") });
   await getDb()
     .update(profile)
@@ -35,6 +40,7 @@ export async function saveItem(slug: string, form: FormData) {
   await requireSession();
   const { section, t } = sectionOrThrow(slug);
   const { values, errors } = parseFields(section.fields, form);
+  await uploadImages(section.fields, form, values, errors, putImage);
   const id = Number(form.get("id")) || null;
   const path = `/${slug}`;
   if (errors.length) back(path, { errore: errors.join(" · "), ...(id ? { apri: String(id) } : { nuovo: "1" }) });
@@ -93,14 +99,38 @@ async function revalidateWebsite() {
   }
 }
 
-// "Pubblica": fotografa la bozza in una nuova versione e aggiorna subito thoadd.com.
+// I due PDF della versione, caricati su Vercel Blob con un nome che non cambia più.
+async function buildPdfs(versionId: number, snapshot: CvContent) {
+  const fontBaseUrl = `${process.env.WEB_URL ?? "https://thoadd.com"}/fonts`;
+  const [it, en] = await Promise.all([
+    renderCvPdf(snapshot, "it", { fontBaseUrl }),
+    renderCvPdf(snapshot, "en", { fontBaseUrl }),
+  ]);
+  const upload = (lang: string, body: Buffer) =>
+    put(`cv/versione-${versionId}-${lang}.pdf`, body, { access: "public", contentType: "application/pdf", addRandomSuffix: false, allowOverwrite: true });
+  const [pdfIt, pdfEn] = await Promise.all([upload("it", it), upload("en", en)]);
+  return { pdfItUrl: pdfIt.url, pdfEnUrl: pdfEn.url };
+}
+
+// "Pubblica": fotografa la bozza in una nuova versione, crea i PDF e aggiorna subito thoadd.com.
 export async function publish() {
   await requireSession();
+  const db = getDb();
   const snapshot = await loadDraftContent();
-  await getDb().insert(cvVersions).values({ snapshot });
+  const [version] = await db.insert(cvVersions).values({ snapshot }).returning({ id: cvVersions.id });
+
+  let pdfError = false;
+  try {
+    await db.update(cvVersions).set(await buildPdfs(version.id, snapshot)).where(eq(cvVersions.id, version.id));
+  } catch (error) {
+    console.error("PDF non generato", error);
+    pdfError = true;
+  }
+
   const live = await revalidateWebsite();
   revalidatePath("/", "layout");
-  back("/", live ? { ok: "Pubblicato su thoadd.com" } : { errore: "Versione salvata, ma thoadd.com non si è aggiornato: riprova tra poco" });
+  if (pdfError) back("/", { errore: "Sito aggiornato, ma il PDF non è stato creato: premi di nuovo Pubblica" });
+  back("/", live ? { ok: "Pubblicato su thoadd.com, PDF compresi" } : { errore: "Versione salvata, ma thoadd.com non si è aggiornato: riprova tra poco" });
 }
 
 // Rimette online una versione precedente creando una nuova versione identica.

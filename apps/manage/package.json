@@ -9,8 +9,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@thoadd/cv-pdf": "workspace:*",
     "@thoadd/db": "workspace:*",
     "@thoadd/ui": "workspace:*",
+    "@vercel/blob": "^2.8.2",
     "jose": "^6.2.13",
     "next": "^16.4.3",
     "react": "^19.3.1",

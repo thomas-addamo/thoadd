@@ -1,9 +1,10 @@
 import type { Content } from "@thoadd/db/content";
 import { ui, type Lang } from "@/lib/i18n";
 
+// I link fissi /cv.pdf e /cv-en.pdf servono sempre l'ultima versione e contano i download.
 export function cvUrl(cv: Content["cv"], lang: Lang) {
-  if (!cv) return null;
-  return lang === "en" ? cv.pdfEnUrl ?? cv.pdfItUrl : cv.pdfItUrl;
+  if (!cv?.pdfItUrl) return null;
+  return lang === "en" ? "/cv-en.pdf" : "/cv.pdf";
 }
 
 function DownloadIcon({ size }: { size: number }) {
@@ -51,7 +52,7 @@ export function DownloadCv({
     );
   }
   return (
-    <a className={`pill ${className}`} href={href} download="Thomas-Addamo-CV.pdf">
+    <a className={`pill ${className}`} href={href} download={lang === "en" ? "Thomas-Addamo-CV-EN.pdf" : "Thomas-Addamo-CV.pdf"}>
       <DownloadIcon size={iconSize} />
       {content}
     </a>
