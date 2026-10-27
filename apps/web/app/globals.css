@@ -2,9 +2,224 @@
 @import "@thoadd/ui/tokens.css";
 @source "../../../packages/ui/src";
 
+@layer base {
 html {
   background: var(--color-mist);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  font-size: clamp(16px, 1.2vw, 17px);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--color-iris);
+}
+a:hover {
+  color: var(--color-ink);
+}
+}
+
+@layer components {
+/* Il cielo della pagina: bianco in alto, nebbia pervinca in fondo. */
+.sky {
+  background:
+    radial-gradient(60% 40% at 100% 2%, rgb(246 227 218 / 0.7), transparent 70%),
+    radial-gradient(50% 30% at 0% 96%, rgb(246 227 218 / 0.55), transparent 70%),
+    linear-gradient(180deg, #fff 0%, #f4f6fb 14%, #f4f6fb 46%, #e9edf9 66%, #dce3f7 80%, #b8c6ec 92%, #8fa6e0 100%);
+  overflow: hidden;
+}
+
+/* Griglia del design: 12 colonne su desktop, una sola colonna sotto i 900 px. */
+.wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 5.6vw, 80px);
+  box-sizing: border-box;
+}
+.g12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+}
+.c1-7 { grid-column: 1 / span 7; }
+.c8-12 { grid-column: 8 / span 5; }
+.c1-4 { grid-column: 1 / span 4; }
+.c5-12 { grid-column: 5 / span 8; }
+.c1-3 { grid-column: 1 / span 3; }
+.c4-8 { grid-column: 4 / span 5; }
+.c4-9 { grid-column: 4 / span 6; }
+.c9-12 { grid-column: 9 / span 4; }
+.c10-12 { grid-column: 10 / span 3; }
+.p1 { grid-column: 1 / span 5; grid-row: 1; z-index: 1; }
+.p2 { grid-column: 5 / span 5; grid-row: 1; margin-top: 96px; z-index: 2; }
+.p3 { grid-column: 8 / span 5; grid-row: 1; margin-top: 192px; z-index: 3; }
+
+.display { font-family: var(--font-display); }
+.title-xl {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(52px, 6.7vw, 96px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.title-l {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.title-m {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.label { font-size: 13px; color: var(--color-slate); }
+
+/* Pulsanti a pillola e link. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 999px;
+  background: var(--color-night);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s, background 0.3s;
+}
+.pill:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-pill);
+}
+.pill:active { transform: scale(0.98); background: #000; }
+.pill[aria-disabled="true"] {
+  background: var(--color-haze);
+  color: var(--color-slate);
+  pointer-events: none;
+}
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-haze);
+  background: rgb(255 255 255 / 0.5);
+  color: var(--color-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.3s, box-shadow 0.5s;
+}
+.ghost:hover {
+  background: #fff;
+  color: var(--color-ink);
+  box-shadow: 0 12px 24px -16px rgb(61 79 184 / 0.5);
+}
+.pill:focus-visible,
+.ghost:focus-visible,
+.lang:focus-visible,
+.navlink:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-iris);
+  outline-offset: 3px;
+}
+.navlink {
+  color: var(--color-slate);
+  text-decoration: none;
+  font-size: 15px;
+  padding: 12px 0;
+}
+.navlink:hover { color: var(--color-ink); }
+.plain { color: var(--color-ink); text-decoration: none; }
+.plain:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--color-aura); }
+
+/* Fogli e righe che si sollevano. */
+.sheet { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.7s; }
+.sheet:hover {
+  transform: translateY(-14px);
+  box-shadow: 0 60px 120px -40px rgb(61 79 184 / 0.38), 0 2px 8px rgb(61 79 184 / 0.06);
+}
+.row { transition: background 0.5s; }
+.row:hover { background: rgb(255 255 255 / 0.6); }
+
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .plus { transform: rotate(45deg); border-color: var(--color-iris); color: var(--color-iris); }
+.plus { transition: transform 0.4s; }
+
+/* Vetro dell'hero. */
+@keyframes drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(4deg); }
+}
+@keyframes spin { to { transform: rotateX(64deg) rotateZ(360deg); } }
+.orb { animation: drift 12s ease-in-out infinite; }
+.ring { animation: spin 40s linear infinite; }
+
+/* Il nome gigante del footer sale dal bordo mentre arrivi in fondo. */
+@keyframes rise {
+  from { transform: translateY(28%); opacity: 0.2; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@supports (animation-timeline: view()) {
+  .wordmark { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 55%; }
+}
+
+/* I fogli salgono con dissolvenza quando entrano nella pagina. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@supports (animation-timeline: view()) {
+  .reveal { animation: fade-up linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+}
+
+/* Apertura: nascosta se già vista (classe messa prima del primo disegno). */
+@keyframes halo { 0% { transform: scale(0.4); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes emerge { 0% { filter: blur(28px); opacity: 0; letter-spacing: 0.04em; } 100% { filter: blur(0); opacity: 1; letter-spacing: -0.03em; } }
+@keyframes intro-fade { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
+.intro { animation: intro-out 0.8s 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.intro .a-halo { animation: halo 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.intro .a-name { animation: emerge 1.5s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.intro .a-sub { animation: intro-fade 0.8s 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.intro-seen .intro,
+.intro.is-done { display: none; }
+
+}
+
+@media (max-width: 900px) {
+  .g12 { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 16px; }
+  .g12 > * { grid-column: 1 / -1 !important; margin-top: 0 !important; grid-row: auto !important; }
+  .hide-m { display: none !important; }
+  .stack-m { flex-direction: column !important; align-items: stretch !important; }
+}
+@media (min-width: 901px) {
+  .only-m { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .intro { display: none; }
 }

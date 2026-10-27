@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 // Ogni testo visibile esiste in italiano (predefinito) e, se compilato, in inglese.
+// Le parole tra *asterischi* vengono mostrate in Instrument Serif corsivo.
 export type Localized = { it: string; en?: string };
 
 const localized = (name: string) => jsonb(name).$type<Localized>().notNull();
@@ -28,12 +29,21 @@ export const profile = pgTable("profile", {
   id: integer("id").primaryKey().default(1),
   fullName: text("full_name").notNull().default("Thomas Addamo"),
   role: localized("role"),
+  // Hero: frase principale, frase su cosa cerchi, etichetta di disponibilità.
   tagline: localized("tagline"),
-  bio: localized("bio"),
-  city: text("city"),
-  photoUrl: text("photo_url"),
+  lookingFor: localizedOptional("looking_for"),
   status: localizedOptional("status"),
   available: boolean("available").notNull().default(true),
+  // Profilo: titolo, bio breve, paragrafo personale e i tre dati in fondo.
+  headline: localizedOptional("headline"),
+  bio: localized("bio"),
+  bioPersonal: localizedOptional("bio_personal"),
+  currentRole: text("current_role"),
+  focus: localizedOptional("focus"),
+  seeking: localizedOptional("seeking"),
+  workMode: localizedOptional("work_mode"),
+  city: text("city"),
+  photoUrl: text("photo_url"),
   email: text("email"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -43,6 +53,7 @@ export const experiences = pgTable("experiences", {
   company: text("company").notNull(),
   role: localized("role"),
   city: text("city"),
+  employmentType: localizedOptional("employment_type"),
   startDate: date("start_date").notNull(),
   endDate: date("end_date"),
   description: localizedOptional("description"),
@@ -72,11 +83,15 @@ export const projects = pgTable("projects", {
   technologies: text("technologies").array().notNull().default([]),
 });
 
+// level: 3 uso ogni giorno, 2 conosco bene, 1 sto approfondendo.
+// size: 1-3, la dimensione nella composizione tipografica; accent = in corsivo serif.
 export const skills = pgTable("skills", {
   ...listItem,
   name: text("name").notNull(),
   category: text("category"),
-  level: integer("level").notNull().default(3),
+  level: integer("level").notNull().default(2),
+  size: integer("size").notNull().default(2),
+  accent: boolean("accent").notNull().default(false),
 });
 
 export const cefrLevel = pgEnum("cefr_level", ["A1", "A2", "B1", "B2", "C1", "C2", "native"]);
@@ -100,6 +115,12 @@ export const links = pgTable("links", {
   kind: text("kind").notNull(),
   label: text("label"),
   url: text("url").notNull(),
+});
+
+export const faqs = pgTable("faqs", {
+  ...listItem,
+  question: localized("question"),
+  answer: localized("answer"),
 });
 
 // Una riga per ogni "Pubblica": il sito e i PDF usano sempre l'ultima.

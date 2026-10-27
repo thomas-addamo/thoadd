@@ -18,6 +18,7 @@ pnpm dev          # web su :3000, manage su :3001
 pnpm build
 pnpm db:generate  # dopo una modifica a packages/db/src/schema.ts
 pnpm db:migrate
+pnpm --filter @thoadd/db seed   # contenuti segnaposto del design (svuota le tabelle del CV)
 ```
 
 Serve `DATABASE_URL` in `.env.local` dentro `apps/web`, `apps/manage` e `packages/db` (vedi `.env.example`).
