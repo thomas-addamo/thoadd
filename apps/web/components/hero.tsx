@@ -1,6 +1,6 @@
-import type { Content } from "@/lib/content";
+import type { Content } from "@thoadd/db/content";
 import { tr, ui, type Lang } from "@/lib/i18n";
-import { DownloadCv } from "./download-cv";
+import { cvUrl, DownloadCv } from "./download-cv";
 import { Orb } from "./orb";
 import { Rich } from "./rich";
 
@@ -8,7 +8,7 @@ export function Hero({ content, lang }: { content: Content; lang: Lang }) {
   const t = ui[lang];
   const { profile: me, cv } = content;
   const [first, ...rest] = me.fullName.split(" ");
-  const updated = cv
+  const updated = cvUrl(cv, lang) && cv
     ? new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "it-IT", { month: "long", year: "numeric" }).format(cv.publishedAt)
     : null;
 

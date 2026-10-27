@@ -1,4 +1,4 @@
-import type { Content } from "@/lib/content";
+import type { Content } from "@thoadd/db/content";
 import { ui, type Lang } from "@/lib/i18n";
 import { DownloadCv } from "./download-cv";
 import { Rich } from "./rich";

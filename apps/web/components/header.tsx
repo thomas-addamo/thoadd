@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Monogram } from "@thoadd/ui/monogram";
-import type { Content } from "@/lib/content";
+import type { Content } from "@thoadd/db/content";
 import { homePath, ui, type Lang } from "@/lib/i18n";
 import { DownloadCv } from "./download-cv";
 import { MobileMenu } from "./mobile-menu";
@@ -17,7 +17,7 @@ export function Header({ lang, cv }: { lang: Lang; cv: Content["cv"] }) {
       <div className="wrap relative flex h-16 items-center justify-between gap-6 md:h-[72px]">
         <a href="#top" aria-label={t.home} className="flex min-h-11 items-center gap-3 text-ink no-underline">
           <Monogram size={32} />
-          <span className="display hide-m text-[17px] tracking-[0.01em]">Thomas Addamo</span>
+          <span className="display hide-m text-[17px] tracking-[0.01em] whitespace-nowrap">Thomas Addamo</span>
         </a>
 
         <nav aria-label={t.sections} className="hide-m flex gap-8">

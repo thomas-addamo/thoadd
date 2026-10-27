@@ -1,4 +1,4 @@
-import type { Content } from "@/lib/content";
+import type { Content } from "@thoadd/db/content";
 import { ui, type Lang } from "@/lib/i18n";
 import { Footer } from "./footer";
 import { Header } from "./header";
@@ -6,7 +6,7 @@ import { Hero } from "./hero";
 import { Intro } from "./intro";
 import { Education, Experiences, Faq, Profile, Projects, Skills } from "./sections";
 
-export function HomePage({ content, lang }: { content: Content; lang: Lang }) {
+export function HomePage({ content, lang, intro = true }: { content: Content; lang: Lang; intro?: boolean }) {
   const me = content.profile;
   const personLd = {
     "@context": "https://schema.org",
@@ -26,7 +26,7 @@ export function HomePage({ content, lang }: { content: Content; lang: Lang }) {
       >
         {ui[lang].skip}
       </a>
-      <Intro lang={lang} name={me.fullName} />
+      {intro && <Intro lang={lang} name={me.fullName} />}
       <div id="top" className="sky">
         <Header lang={lang} cv={content.cv} />
         <main id="main">

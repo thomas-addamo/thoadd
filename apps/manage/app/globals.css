@@ -2,9 +2,25 @@
 @import "@thoadd/ui/tokens.css";
 @source "../../../packages/ui/src";
 
-html {
-  background: var(--color-mist);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  html {
+    background: var(--color-mist);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--color-iris);
+  }
+  details > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-iris);
+    outline-offset: 2px;
+  }
 }

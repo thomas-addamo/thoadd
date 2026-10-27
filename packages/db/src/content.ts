@@ -1,35 +1,22 @@
+import { asc, desc, eq } from "drizzle-orm";
+import { getDb } from "./index";
 import {
-  asc,
-  desc,
-  eq,
   certifications,
   cvVersions,
   education,
   experiences,
   faqs,
-  getDb,
   languages,
   links,
   profile,
   projects,
   skills,
-} from "@thoadd/db";
+} from "./schema";
 
-// Tutto ciò che la home mostra, letto in parallelo dal database.
-export async function getContent() {
+// I contenuti del CV così come sono ora nelle tabelle (la "bozza" che si modifica da manage).
+export async function loadDraftContent() {
   const db = getDb();
-  const [
-    [me],
-    expRows,
-    projRows,
-    skillRows,
-    langRows,
-    eduRows,
-    certRows,
-    linkRows,
-    faqRows,
-    [cv],
-  ] = await Promise.all([
+  const [[me], expRows, projRows, skillRows, langRows, eduRows, certRows, linkRows, faqRows] = await Promise.all([
     db.select().from(profile).limit(1),
     db.select().from(experiences).where(eq(experiences.visible, true)).orderBy(asc(experiences.position)),
     db.select().from(projects).where(eq(projects.visible, true)).orderBy(asc(projects.position)),
@@ -39,7 +26,6 @@ export async function getContent() {
     db.select().from(certifications).where(eq(certifications.visible, true)).orderBy(asc(certifications.position)),
     db.select().from(links).where(eq(links.visible, true)).orderBy(asc(links.position)),
     db.select().from(faqs).where(eq(faqs.visible, true)).orderBy(asc(faqs.position)),
-    db.select().from(cvVersions).orderBy(desc(cvVersions.publishedAt)).limit(1),
   ]);
 
   if (!me) throw new Error("Profilo mancante: esegui il seed del database");
@@ -54,8 +40,24 @@ export async function getContent() {
     certifications: certRows,
     links: linkRows,
     faqs: faqRows,
-    cv: cv ?? null,
   };
 }
 
-export type Content = Awaited<ReturnType<typeof getContent>>;
+export type CvContent = Awaited<ReturnType<typeof loadDraftContent>>;
+
+export async function latestVersion() {
+  const [row] = await getDb().select().from(cvVersions).orderBy(desc(cvVersions.publishedAt)).limit(1);
+  return row ?? null;
+}
+
+export type CvVersion = NonNullable<Awaited<ReturnType<typeof latestVersion>>>;
+
+// Il sito pubblico mostra solo l'ultima versione pubblicata; prima della prima
+// pubblicazione mostra la bozza, così la home non resta mai vuota.
+export async function loadPublishedContent() {
+  const version = await latestVersion();
+  const content = version ? (version.snapshot as CvContent) : await loadDraftContent();
+  return { ...content, cv: version };
+}
+
+export type Content = Awaited<ReturnType<typeof loadPublishedContent>>;
