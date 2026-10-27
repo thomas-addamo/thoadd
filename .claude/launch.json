@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@thoadd/web", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "manage",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@thoadd/manage", "dev"],
+      "port": 3001
+    }
+  ]
+}

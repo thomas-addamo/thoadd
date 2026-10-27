@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@thoadd/ui/tokens.css";
+@source "../../../packages/ui/src";
+
+html {
+  background: var(--color-mist);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

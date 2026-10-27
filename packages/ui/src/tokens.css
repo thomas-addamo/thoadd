@@ -1,0 +1,36 @@
+/* Token di Atmosfera: stessi nomi del brief e del design. */
+@theme {
+  --color-cloud: #ffffff;
+  --color-mist: #f4f6fb;
+  --color-haze: #dde3f3;
+  --color-haze-strong: #c9d2ee;
+  --color-aura: #8fa6e0;
+  --color-iris: #3d4fb8;
+  --color-ink: #111318;
+  --color-slate: #5b6170;
+  --color-night: #0e1016;
+  --color-dawn: #f6e3da;
+
+  --font-display: var(--font-clash), "Outfit", sans-serif;
+  --font-sans: var(--font-general), "Hanken Grotesk", system-ui, sans-serif;
+  --font-serif: var(--font-instrument), serif;
+
+  --radius-sheet: 32px;
+  --radius-card: 24px;
+
+  --shadow-sheet: 0 30px 60px -40px rgb(61 79 184 / 0.3);
+  --shadow-card: 0 50px 100px -50px rgb(61 79 184 / 0.32), 0 2px 6px rgb(61 79 184 / 0.05);
+  --shadow-lift: 0 60px 120px -40px rgb(61 79 184 / 0.42), 0 2px 8px rgb(61 79 184 / 0.06);
+  --shadow-pill: 0 18px 36px -14px rgb(61 79 184 / 0.55);
+}
+
+@utility bg-atmosfera {
+  background:
+    radial-gradient(40% 60% at 0% 100%, rgb(246 227 218 / 0.8), transparent 70%),
+    linear-gradient(180deg, var(--color-cloud) 0%, #dce3f7 45%, var(--color-aura) 100%);
+}
+
+@utility dots {
+  background-image: radial-gradient(circle, #bfcbeb 1.1px, transparent 1.7px);
+  background-size: 8px 8px;
+}

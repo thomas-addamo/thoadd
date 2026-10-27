@@ -1,0 +1,21 @@
+{
+  "name": "@thoadd/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "drizzle-orm": "^0.45.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.11"
+  }
+}

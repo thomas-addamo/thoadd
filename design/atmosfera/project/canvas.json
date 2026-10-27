@@ -1,0 +1,134 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "CV-1.dc.html": {
+      "h": 1123,
+      "page": "cv",
+      "paper": "a4",
+      "title": "CV · pagina 1",
+      "w": 794,
+      "x": 0,
+      "y": 0
+    },
+    "CV-2.dc.html": {
+      "h": 1123,
+      "page": "cv",
+      "paper": "a4",
+      "title": "CV · pagina 2",
+      "w": 794,
+      "x": 874,
+      "y": 0
+    },
+    "Components.dc.html": {
+      "h": 1560,
+      "page": "sito",
+      "title": "Componenti e stati",
+      "w": 1440,
+      "x": 1990,
+      "y": 3760
+    },
+    "Foundations.dc.html": {
+      "h": 1320,
+      "page": "sito",
+      "title": "Palette, tipografia, misure",
+      "w": 1440,
+      "x": 1990,
+      "y": 2320
+    },
+    "Intro.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "sito",
+      "title": "Apertura · 2 s saltabile",
+      "w": 1440,
+      "x": 1990,
+      "y": 0
+    },
+    "Logo.dc.html": {
+      "h": 1180,
+      "page": "sito",
+      "title": "Logo e varianti",
+      "w": 1440,
+      "x": 1990,
+      "y": 1020
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "guides": [
+        {
+          "color": "rgba(143,166,224,0.12)",
+          "count": 12,
+          "gutter": 24,
+          "hidden": true,
+          "kind": "columns",
+          "margin": 80
+        }
+      ],
+      "h": 6600,
+      "page": "sito",
+      "title": "Home · desktop 1440",
+      "w": 1440,
+      "x": 0,
+      "y": 46
+    },
+    "Mobile.dc.html": {
+      "h": 6200,
+      "page": "sito",
+      "title": "Home · telefono 390",
+      "w": 390,
+      "x": 1520,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-27T10:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "page": "sito",
+    "view": "canvas"
+  },
+  "notes": {
+    "titleCv": {
+      "kind": "title1",
+      "maxW": 1668,
+      "page": "cv",
+      "text": "CV in PDF · A4 · 2 pagine",
+      "w": 240,
+      "x": 0,
+      "y": -320
+    },
+    "titleSito": {
+      "kind": "title1",
+      "maxW": 3430,
+      "page": "sito",
+      "text": "thoadd.com — Atmosfera",
+      "w": 240,
+      "x": 0,
+      "y": -320
+    }
+  },
+  "order": [
+    "CV-1.dc.html",
+    "CV-2.dc.html",
+    "Main.dc.html",
+    "Mobile.dc.html",
+    "Intro.dc.html",
+    "Logo.dc.html",
+    "Foundations.dc.html",
+    "Components.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "sito",
+      "name": "Sito e identità"
+    },
+    {
+      "id": "cv",
+      "name": "CV in PDF"
+    }
+  ],
+  "title": "thoadd.com — Atmosfera"
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Fondamenta — Thomas Addamo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;display=swap">
+<style>
+@font-face{font-family:'Clash Display';src:url(/_blob/b04d95620fb567852436968d1ec09231) format('opentype');font-weight:300;font-display:swap}
+@font-face{font-family:'Clash Display';src:url(/_blob/094ca4a1e57bcb9b24ed4d3931fa8bf6) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'Clash Display';src:url(/_blob/04cb641b37476399e54ae0fa7ea3cd11) format('opentype');font-weight:500;font-display:swap}
+@font-face{font-family:'General Sans';src:url(/_blob/11122d612115d49dbffdb8be29d2bc98) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'General Sans';src:url(/_blob/a9739bfd777ab9dce2d040186db014fa) format('opentype');font-weight:500;font-display:swap}
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1320px; box-sizing: border-box; padding: 80px; font-family: 'General Sans', 'Hanken Grotesk', system-ui, sans-serif; color: #111318; background: #F4F6FB; display: flex; flex-direction: column; gap: 48px">
+<h1 style="margin: 0; font-family: 'Clash Display', 'Outfit', sans-serif; font-weight: 300; font-size: 56px; letter-spacing: -0.02em; line-height: 1">Palette, tipografia, <em style="font-family: 'Instrument Serif', serif; font-weight: 400; color: #3D4FB8">misure</em></h1>
+
+<div style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{swatches}}" as="s" hint-placeholder-count="9">
+<div style="background: #FFFFFF; border-radius: 24px; padding: 8px 8px 16px; box-shadow: 0 24px 48px -32px rgba(61,79,184,0.35)">
+<div style="height: 120px; border-radius: 18px; background: {{s.hex}}; box-shadow: inset 0 0 0 1px rgba(17,19,24,0.06)"></div>
+<p style="margin: 12px 8px 0; font-weight: 500">{{s.name}}</p>
+<p style="margin: 2px 8px 0; font-size: 13px; color: #5B6170">{{s.hex}}</p>
+<p style="margin: 8px 8px 0; font-size: 13px; line-height: 1.4">{{s.role}}</p>
+<p style="margin: 8px 8px 0; font-size: 13px; color: #3D4FB8">{{s.contrast}}</p>
+</div>
+</sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px">
+<div style="grid-column: span 4; height: 200px; border-radius: 32px; position: relative; overflow: hidden; background: radial-gradient(50% 70% at 0% 100%, rgba(246,227,218,0.85), transparent 70%), radial-gradient(40% 60% at 100% 0%, rgba(246,227,218,0.6), transparent 70%), linear-gradient(180deg, #FFFFFF, #DCE3F7 50%, #8FA6E0)">
+<p style="position: absolute; left: 24px; bottom: 20px; margin: 0; font-size: 13px">Sfumatura firma · cloud → #DCE3F7 → aura, velo dawn ai bordi</p>
+</div>
+<div style="grid-column: span 8; background: #FFFFFF; border-radius: 32px; padding: 32px 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; box-shadow: 0 30px 60px -40px rgba(61,79,184,0.3)">
+<div>
+<p style="margin: 0 0 16px; font-size: 13px; color: #5B6170">Raggi</p>
+<div style="display: flex; align-items: end; gap: 16px">
+<div style="width: 64px; height: 64px; border-radius: 32px 0 0 0; border-top: 1px solid #3D4FB8; border-left: 1px solid #3D4FB8"></div>
+<div style="width: 48px; height: 48px; border-radius: 24px 0 0 0; border-top: 1px solid #3D4FB8; border-left: 1px solid #3D4FB8"></div>
+<div style="width: 72px; height: 32px; border-radius: 999px; border: 1px solid #3D4FB8"></div>
+</div>
+<p style="margin: 12px 0 0; font-size: 13px">32 fogli · 24 card · 999 pillole</p>
+</div>
+<div>
+<p style="margin: 0 0 16px; font-size: 13px; color: #5B6170">Spaziature · multipli di 8</p>
+<div style="display: flex; align-items: end; gap: 8px; height: 64px">
+<div style="width: 8px; height: 8px; background: #8FA6E0; border-radius: 2px"></div>
+<div style="width: 16px; height: 16px; background: #8FA6E0; border-radius: 3px"></div>
+<div style="width: 24px; height: 24px; background: #8FA6E0; border-radius: 4px"></div>
+<div style="width: 32px; height: 32px; background: #8FA6E0; border-radius: 5px"></div>
+<div style="width: 48px; height: 48px; background: #8FA6E0; border-radius: 6px"></div>
+<div style="width: 64px; height: 64px; background: #8FA6E0; border-radius: 8px"></div>
+</div>
+<p style="margin: 12px 0 0; font-size: 13px">8 · 16 · 24 · 32 · 48 · 64 · 80 · 120 · 160</p>
+</div>
+<div>
+<p style="margin: 0 0 16px; font-size: 13px; color: #5B6170">Ombra tinta</p>
+<div style="height: 64px; border-radius: 24px; background: #FFFFFF; box-shadow: 0 40px 80px -30px rgba(61,79,184,0.45), 0 2px 6px rgba(61,79,184,0.06); border: 1px solid #DDE3F3"></div>
+<p style="margin: 12px 0 0; font-size: 13px">iris 28–45%, lunga e morbida</p>
+</div>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 32px; padding: 40px; box-shadow: 0 30px 60px -40px rgba(61,79,184,0.3); display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 200px 1fr 160px; align-items: baseline; gap: 24px; padding-bottom: 16px; border-bottom: 1px solid #DDE3F3">
+<p style="margin: 0; font-size: 13px; color: #5B6170">Display · Clash 300</p>
+<p style="margin: 0; font-family: 'Clash Display', 'Outfit', sans-serif; font-weight: 300; font-size: 96px; line-height: 1; letter-spacing: -0.03em">Thomas <em style="font-family: 'Instrument Serif', serif; font-weight: 400; color: #3D4FB8">Addamo</em></p>
+<p style="margin: 0; font-size: 13px; color: #5B6170; text-align: right">96 / 52</p>
+</div>
+<div style="display: grid; grid-template-columns: 200px 1fr 160px; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #DDE3F3">
+<p style="margin: 0; font-size: 13px; color: #5B6170">H1 · Clash 300</p>
+<p style="margin: 0; font-family: 'Clash Display', 'Outfit', sans-serif; font-weight: 300; font-size: 56px; line-height: 1.05; letter-spacing: -0.02em">Dove ho <em style="font-family: 'Instrument Serif', serif; font-weight: 400; color: #3D4FB8">imparato</em></p>
+<p style="margin: 0; font-size: 13px; color: #5B6170; text-align: right">56 / 36</p>
+</div>
+<div style="display: grid; grid-template-columns: 200px 1fr 160px; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #DDE3F3">
+<p style="margin: 0; font-size: 13px; color: #5B6170">H2 · Clash 400</p>
+<p style="margin: 0; font-family: 'Clash Display', 'Outfit', sans-serif; font-weight: 400; font-size: 32px; line-height: 1.15">Software Developer</p>
+<p style="margin: 0; font-size: 13px; color: #5B6170; text-align: right">32 / 24</p>
+</div>
+<div style="display: grid; grid-template-columns: 200px 1fr 160px; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #DDE3F3">
+<p style="margin: 0; font-size: 13px; color: #5B6170">Testo · General Sans 400</p>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Costruisco prodotti web chiari, veloci e piacevoli da usare. Il testo regge anche l’inglese, che è più corto del 10–15%.</p>
+<p style="margin: 0; font-size: 13px; color: #5B6170; text-align: right">17 / 16 · 1,6</p>
+</div>
+<div style="display: grid; grid-template-columns: 200px 1fr 160px; align-items: baseline; gap: 24px; padding-top: 16px">
+<p style="margin: 0; font-size: 13px; color: #5B6170">Didascalia · 400</p>
+<p style="margin: 0; font-size: 13px; color: #5B6170">PDF · 2 pagine · aggiornato a [mese anno]</p>
+<p style="margin: 0; font-size: 13px; color: #5B6170; text-align: right">13</p>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      swatches: [
+        { name: 'cloud', hex: '#FFFFFF', role: 'Fogli', contrast: 'ink 18,6:1' },
+        { name: 'mist', hex: '#F4F6FB', role: 'Sfondo', contrast: 'slate 5,7:1' },
+        { name: 'haze', hex: '#DDE3F3', role: 'Linee, puntini', contrast: 'solo decoro' },
+        { name: 'aura', hex: '#8FA6E0', role: 'Firma, sfumature, wordmark', contrast: 'mai testo · ink 7,7:1' },
+        { name: 'iris', hex: '#3D4FB8', role: 'Link, evidenza', contrast: 'su cloud 7,0:1' },
+        { name: 'ink', hex: '#111318', role: 'Testo', contrast: 'su cloud 18,6:1' },
+        { name: 'slate', hex: '#5B6170', role: 'Testo secondario', contrast: 'su cloud 6,2:1' },
+        { name: 'night', hex: '#0E1016', role: 'Solo pillole', contrast: 'cloud 19,0:1' },
+        { name: 'dawn', hex: '#F6E3DA', role: 'Riflesso caldo', contrast: 'solo decoro' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

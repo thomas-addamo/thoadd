@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Apertura — Thomas Addamo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;display=swap">
+<style>
+@font-face{font-family:'Clash Display';src:url(/_blob/b04d95620fb567852436968d1ec09231) format('opentype');font-weight:300;font-display:swap}
+@font-face{font-family:'Clash Display';src:url(/_blob/094ca4a1e57bcb9b24ed4d3931fa8bf6) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'Clash Display';src:url(/_blob/04cb641b37476399e54ae0fa7ea3cd11) format('opentype');font-weight:500;font-display:swap}
+@font-face{font-family:'General Sans';src:url(/_blob/11122d612115d49dbffdb8be29d2bc98) format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'General Sans';src:url(/_blob/a9739bfd777ab9dce2d040186db014fa) format('opentype');font-weight:500;font-display:swap}
+body{margin:0}
+a{color:#3D4FB8}a:hover{color:#111318}
+@keyframes halo{0%{transform:scale(.4);opacity:0}60%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes emerge{0%{filter:blur(28px);opacity:0;letter-spacing:.04em}100%{filter:blur(0);opacity:1;letter-spacing:-.03em}}
+@keyframes fadeup{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+.a-halo{animation:halo 1.8s cubic-bezier(.2,.7,.2,1) both}
+.a-name{animation:emerge 1.5s .35s cubic-bezier(.2,.7,.2,1) both}
+.a-sub{animation:fadeup .8s 1.3s cubic-bezier(.2,.7,.2,1) both}
+.skip:focus-visible,.enter:focus-visible{outline:3px solid #3D4FB8;outline-offset:3px}
+.skip:hover{background:#FFFFFF;color:#111318}
+@media (prefers-reduced-motion: reduce){.a-halo,.a-name,.a-sub{animation:none}}
+</style>
+</helmet>
+<div style="position: relative; width: 1440px; height: 900px; overflow: hidden; font-family: 'General Sans', 'Hanken Grotesk', system-ui, sans-serif; color: #111318; background: radial-gradient(50% 50% at 100% 0%, rgba(246,227,218,0.7), transparent 70%), linear-gradient(180deg, #FFFFFF, #F4F6FB 60%, #E9EDF9)">
+<div class="{{haloClass}}" aria-hidden="true" style="position: absolute; left: 50%; top: 50%; width: 1100px; height: 1100px; margin: -550px 0 0 -550px; border-radius: 999px; background: radial-gradient(circle, rgba(143,166,224,0.55) 0, rgba(220,227,247,0.5) 34%, rgba(246,227,218,0.25) 52%, transparent 68%)"></div>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center">
+<h1 class="{{nameClass}}" style="margin: 0; font-family: 'Clash Display', 'Outfit', sans-serif; font-weight: 300; font-size: 128px; line-height: 1; letter-spacing: -0.03em">Thomas <em style="font-family: 'Instrument Serif', serif; font-weight: 400; color: #3D4FB8">Addamo</em></h1>
+<p class="{{subClass}}" style="margin: 24px 0 0; font-size: 17px; color: #5B6170">Software Developer</p>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<a class="enter" href="Main.dc.html" style="margin-top: 48px; display: inline-flex; align-items: center; height: 56px; padding: 0 28px; border-radius: 999px; background: #0E1016; color: #FFFFFF; text-decoration: none; font-weight: 500">Entra</a>
+</sc-if>
+</div>
+<a class="skip" href="Main.dc.html" style="position: absolute; right: 40px; bottom: 40px; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #DDE3F3; background: rgba(255,255,255,0.6); color: #111318; text-decoration: none; font-size: 15px">Salta intro <span aria-hidden="true">→</span></a>
+<p style="position: absolute; left: 40px; bottom: 40px; margin: 0; height: 44px; display: flex; align-items: center; font-size: 13px; color: #5B6170">{{modeLabel}}</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reduceMotion":{"editor":"boolean","default":false,"section":"Movimento"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { done: false };
+  }
+  componentDidMount() {
+    this.timer = setTimeout(() => this.setState({ done: true }), 2200);
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+  renderVals() {
+    const still = this.props.reduceMotion ?? false;
+    const done = still || this.state.done;
+    return {
+      done: done,
+      haloClass: still ? '' : 'a-halo',
+      nameClass: still ? '' : 'a-name',
+      subClass: still ? '' : 'a-sub',
+      modeLabel: still ? 'Riduci movimento: nessuna animazione' : 'Apertura · circa 2 secondi'
+    };
+  }
+}
+</script>
+</body>
+</html>
