@@ -1,6 +1,11 @@
 <div align="center">
 
-# thoadd
+<a href="https://thoadd.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/thoadd-dark.svg">
+    <img src=".github/thoadd-light.svg" alt="thoadd" width="100%">
+  </picture>
+</a>
 
 **Il CV online di Thomas Addamo.**<br>
 Un sito personale in stile "Atmosfera", un pannello per gestirlo e un CV in PDF sempre aggiornato.
