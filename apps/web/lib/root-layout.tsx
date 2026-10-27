@@ -1,9 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { fontVariables } from "@thoadd/ui/fonts";
-import { introScript } from "@/components/intro";
+import { themeScript } from "@thoadd/ui/theme-script";
+import { introScript } from "./intro-script";
 import type { Lang } from "./i18n";
 
-export const viewport: Viewport = { themeColor: "#F4F6FB" };
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F6FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0C14" },
+  ],
+};
 
 export function siteMetadata(lang: Lang): Metadata {
   const en = lang === "en";
@@ -31,7 +37,7 @@ export function RootHtml({ lang, children }: { lang: Lang; children: React.React
   return (
     <html lang={lang} className={fontVariables} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: introScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeScript + introScript }} />
       </head>
       <body className="m-0">{children}</body>
     </html>

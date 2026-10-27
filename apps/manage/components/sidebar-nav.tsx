@@ -16,7 +16,7 @@ export function SidebarNav({ items }: { items: { href: string; label: string }[]
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={`flex min-h-11 items-center gap-2 rounded-full px-4 text-[15px] no-underline transition ${
-                  active ? "bg-white font-medium text-ink shadow-[0_4px_12px_-6px_rgb(61_79_184/0.4)]" : "text-slate hover:bg-white/60 hover:text-ink"
+                  active ? "bg-cloud font-medium text-ink shadow-[0_4px_12px_-6px_rgb(61_79_184/0.4)]" : "text-slate hover:bg-glass hover:text-ink"
                 }`}
               >
                 {active && <span aria-hidden="true" className="size-1.5 rounded-full bg-iris" />}

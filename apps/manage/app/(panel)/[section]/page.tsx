@@ -12,7 +12,7 @@ export function generateStaticParams() {
   return sections.map((s) => ({ section: s.slug }));
 }
 
-const small = "grid size-9 place-items-center rounded-full border border-haze bg-white text-[15px] text-ink transition hover:border-iris disabled:opacity-30";
+const small = "grid size-9 place-items-center rounded-full border border-haze bg-cloud text-[15px] text-ink transition hover:border-iris disabled:opacity-30";
 
 export default async function SectionPage({
   params,
@@ -65,7 +65,7 @@ export default async function SectionPage({
                   <button type="submit" className={small} disabled={i === rows.length - 1} aria-label="Sposta giù">↓</button>
                 </form>
                 <form action={toggleItem.bind(null, slug, id, !visible)}>
-                  <button type="submit" className="h-9 rounded-full border border-haze bg-white px-3.5 text-[13px] text-ink hover:border-iris">
+                  <button type="submit" className="h-9 rounded-full border border-haze bg-cloud px-3.5 text-[13px] text-ink hover:border-iris">
                     {visible ? "Nascondi" : "Mostra"}
                   </button>
                 </form>
@@ -83,7 +83,7 @@ export default async function SectionPage({
         })}
       </ol>
 
-      <details open={query.nuovo === "1" || rows.length === 0} className="mt-6 rounded-[var(--radius-card)] border border-dashed border-haze-strong bg-white/50">
+      <details open={query.nuovo === "1" || rows.length === 0} className="mt-6 rounded-[var(--radius-card)] border border-dashed border-haze-strong bg-cloud/50">
         <summary className="flex min-h-14 items-center px-5 text-[15px] font-medium text-iris">+ Aggiungi {section.singular}</summary>
         <form action={save} className="border-t border-haze px-5 pt-5 pb-6">
           <Fields fields={section.fields} values={{}} idPrefix={`${slug}-nuovo`} />

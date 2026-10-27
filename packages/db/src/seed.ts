@@ -68,6 +68,7 @@ await db.insert(experiences).values([
   },
   {
     position: 1,
+    kind: "qualifica",
     company: "[Azienda]",
     role: { it: "Junior Web Developer", en: "Junior Web Developer" },
     city: "[Città]",
@@ -82,6 +83,7 @@ await db.insert(experiences).values([
   },
   {
     position: 2,
+    kind: "attestato",
     company: "[Azienda]",
     role: { it: "Stage sviluppo software", en: "Software development internship" },
     city: "[Città]",
@@ -101,6 +103,7 @@ await db.insert(projects).values([
   {
     position: 0,
     title: "[Nome progetto]",
+    slug: "progetto-1",
     kind: { it: "App web", en: "Web app" },
     year: 2025,
     summary: {
@@ -112,6 +115,7 @@ await db.insert(projects).values([
   {
     position: 1,
     title: "[Nome progetto]",
+    slug: "progetto-2",
     kind: { it: "Strumento interno", en: "Internal tool" },
     year: 2024,
     summary: {
@@ -122,6 +126,7 @@ await db.insert(projects).values([
   {
     position: 2,
     title: "[Nome progetto]",
+    slug: "progetto-3",
     kind: { it: "Progetto personale", en: "Personal project" },
     year: 2023,
     summary: {
@@ -155,14 +160,23 @@ await db.insert(languages).values([
 ]);
 
 await db.delete(education);
-await db.insert(education).values({
-  position: 0,
-  school: "[Istituto]",
-  title: { it: "Diploma in *Informatica*", en: "Diploma in *Computer Science*" },
-  city: "[Città]",
-  startYear: null,
-  endYear: null,
-});
+await db.insert(education).values([
+  {
+    position: 0,
+    status: "in_corso",
+    school: "[Istituto]",
+    title: { it: "Diploma in *Informatica*", en: "Diploma in *Computer Science*" },
+    city: "[Città]",
+  },
+  {
+    position: 1,
+    status: "in_programma",
+    school: "[Università]",
+    title: { it: "Laurea in *[Corso di laurea]*", en: "Degree in *[Course]*" },
+    description: { it: "[Perché questa scelta e cosa vuoi imparare.]", en: "[Why this choice and what you want to learn.]" },
+    city: "[Città]",
+  },
+]);
 
 await db.delete(certifications);
 await db.insert(certifications).values({

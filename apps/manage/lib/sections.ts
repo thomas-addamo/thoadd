@@ -7,12 +7,19 @@ import {
   links,
   projects,
   skills,
+  pathKinds,
+  studyStatuses,
   type Localized,
+  type ProjectFile,
+  type ProjectImage,
+  type ProjectLink,
 } from "@thoadd/db";
 
 type Base = { name: string; label: string; required?: boolean; hint?: string };
 export type Field =
-  | (Base & { kind: "text" | "url" | "email" | "image" })
+  | (Base & { kind: "text" | "url" | "email" | "slug" | "links" })
+  | (Base & { kind: "image"; watermark?: boolean; maxWidth?: number })
+  | (Base & { kind: "gallery" | "files" })
   | (Base & { kind: "localized"; long?: boolean })
   | (Base & { kind: "number" | "date" | "boolean" | "tags" })
   | (Base & { kind: "select"; options: { value: string; label: string }[] });
@@ -35,19 +42,25 @@ const accentHint = "Le parole tra *asterischi* compaiono in corsivo blu.";
 
 export const sections: SectionConfig[] = [
   {
-    slug: "esperienze",
-    title: "Esperienze",
-    singular: "esperienza",
+    slug: "percorso",
+    title: "Percorso",
+    singular: "voce del percorso",
     table: experiences,
     fields: [
-      { name: "role", label: "Ruolo", kind: "localized", required: true },
-      { name: "company", label: "Azienda", kind: "text", required: true },
+      {
+        name: "kind",
+        label: "Tipo",
+        kind: "select",
+        options: pathKinds.map((v) => ({ value: v, label: { attestato: "Attestato", qualifica: "Qualifica", attivita: "Attività", esperienza: "Esperienza" }[v] })),
+      },
+      { name: "role", label: "Titolo", kind: "localized", required: true, hint: "Ad esempio il nome dell'attestato, della qualifica o del ruolo." },
+      { name: "company", label: "Ente o azienda", kind: "text", required: true },
       { name: "city", label: "Città", kind: "text" },
-      { name: "employmentType", label: "Tipo di contratto", kind: "localized", hint: "Ad esempio tempo pieno, contratto, tirocinio." },
+      { name: "employmentType", label: "Dettaglio", kind: "localized", hint: "Ad esempio tempo pieno, tirocinio, 40 ore, online." },
       { name: "startDate", label: "Inizio", kind: "date", required: true },
-      { name: "endDate", label: "Fine", kind: "date", hint: "Vuoto = in corso (mostra \"oggi\")." },
-      { name: "description", label: "Che cosa hai fatto", kind: "localized", long: true },
-      { name: "technologies", label: "Tecnologie", kind: "tags", hint: "Separate da virgole." },
+      { name: "endDate", label: "Fine", kind: "date", hint: "Vuoto = in corso (mostra \"oggi\"). Stessa data dell'inizio = solo l'anno." },
+      { name: "description", label: "Descrizione", kind: "localized", long: true, hint: "Nel PDF ogni riga diventa un punto elenco." },
+      { name: "technologies", label: "Tecnologie o competenze", kind: "tags", hint: "Separate da virgole." },
     ],
     summary: (r) => `${it(r.role)} · ${r.company} · ${year(r.startDate)}`,
   },
@@ -58,12 +71,23 @@ export const sections: SectionConfig[] = [
     table: projects,
     fields: [
       { name: "title", label: "Nome", kind: "text", required: true },
+      { name: "slug", label: "Indirizzo della pagina", kind: "slug", hint: "thoadd.com/progetti/… — se vuoto si crea dal nome." },
       { name: "kind", label: "Tipo", kind: "localized", hint: "Ad esempio app web, strumento interno." },
       { name: "year", label: "Anno", kind: "number" },
-      { name: "summary", label: "Descrizione", kind: "localized", long: true, required: true },
-      { name: "url", label: "Link al caso o al sito", kind: "url", hint: "Se c'è, compare \"Leggi il caso\"." },
+      { name: "summary", label: "Descrizione breve", kind: "localized", long: true, required: true, hint: "Compare nella card in home e in cima alla pagina." },
+      {
+        name: "body",
+        label: "Pagina del progetto",
+        kind: "localized",
+        long: true,
+        hint: "## Titoletto · - punto elenco · **grassetto** · *corsivo blu* · [testo](https://link). Una riga vuota separa i paragrafi.",
+      },
+      { name: "imageUrl", label: "Immagine di copertina", kind: "image", maxWidth: 2000, hint: "JPG, PNG o WebP fino a 4 MB. Senza immagine si usa la sfumatura del design." },
+      { name: "gallery", label: "Galleria", kind: "gallery", hint: "Puoi sceglierne più di una alla volta, ognuna fino a 4 MB." },
+      { name: "url", label: "Sito del progetto", kind: "url" },
       { name: "repoUrl", label: "Repository", kind: "url" },
-      { name: "imageUrl", label: "Immagine", kind: "image", hint: "JPG, PNG o WebP fino a 4 MB. Senza immagine si usa la sfumatura del design." },
+      { name: "links", label: "Altri link", kind: "links", hint: "Uno per riga: Testo | https://indirizzo" },
+      { name: "attachments", label: "Allegati", kind: "files", hint: "PDF, documenti, archivi o immagini fino a 4 MB ciascuno." },
       { name: "technologies", label: "Tecnologie", kind: "tags", hint: "Separate da virgole." },
       { name: "featured", label: "In evidenza", kind: "boolean" },
     ],
@@ -118,19 +142,26 @@ export const sections: SectionConfig[] = [
     summary: (r) => `${it(r.name)} · ${r.level}`,
   },
   {
-    slug: "formazione",
-    title: "Formazione",
-    singular: "titolo di studio",
+    slug: "studi",
+    title: "Studi",
+    singular: "percorso di studio",
     table: education,
     fields: [
-      { name: "title", label: "Titolo", kind: "localized", required: true, hint: accentHint },
+      {
+        name: "status",
+        label: "Stato",
+        kind: "select",
+        options: studyStatuses.map((v) => ({ value: v, label: { completato: "Completato", in_corso: "In corso", in_programma: "In programma (futuro)" }[v] })),
+      },
+      { name: "title", label: "Titolo", kind: "localized", required: true, hint: `Ad esempio "Laurea in *Ingegneria informatica*". ${accentHint}` },
+      { name: "description", label: "Descrizione", kind: "localized", long: true, hint: "Facoltativa: perché questa scelta, che cosa vuoi imparare." },
       { name: "school", label: "Istituto", kind: "text", required: true },
       { name: "city", label: "Città", kind: "text" },
       { name: "startYear", label: "Anno di inizio", kind: "number" },
       { name: "endYear", label: "Anno di fine", kind: "number" },
       { name: "grade", label: "Voto", kind: "text" },
     ],
-    summary: (r) => `${it(r.title).replaceAll("*", "")} · ${r.school}`,
+    summary: (r) => `${it(r.title).replaceAll("*", "")} · ${r.school} · ${String(r.status).replace("_", " ")}`,
   },
   {
     slug: "certificazioni",
@@ -193,7 +224,14 @@ export const profileFields: Field[] = [
   { name: "workMode", label: "Modalità di lavoro", kind: "localized" },
   { name: "city", label: "Città", kind: "text" },
   { name: "email", label: "Email pubblica", kind: "email" },
-  { name: "photoUrl", label: "Foto", kind: "image", hint: "JPG, PNG o WebP fino a 4 MB, meglio verticale 4:5. Senza foto si usa il segnaposto del design." },
+  {
+    name: "photoUrl",
+    label: "Foto",
+    kind: "image",
+    watermark: true,
+    maxWidth: 900,
+    hint: "JPG, PNG o WebP fino a 4 MB, meglio verticale 4:5. Viene ridotta e riceve la filigrana © thoadd. Senza foto si usa il segnaposto del design.",
+  },
 ];
 
 // Trasforma i campi del modulo nei valori da salvare; restituisce gli errori per campo.
@@ -229,41 +267,93 @@ export function parseFields(fields: Field[], form: FormData) {
         if (raw && !/^(https?:\/\/|mailto:|#)/.test(raw)) errors.push(`${f.label}: deve iniziare con https://`);
         values[f.name] = raw || null;
         break;
+      case "slug": {
+        const slug = slugify(raw || String(form.get("title") ?? ""));
+        if (!slug) errors.push(`${f.label}: serve almeno una lettera o un numero`);
+        values[f.name] = slug || null;
+        break;
+      }
+      case "links": {
+        const list: ProjectLink[] = [];
+        for (const line of raw.split("\n").map((l) => l.trim()).filter(Boolean)) {
+          const [label, url] = line.includes("|") ? line.split("|").map((x) => x.trim()) : [line.replace(/^https?:\/\//, ""), line];
+          if (!/^https?:\/\//.test(url)) errors.push(`${f.label}: "${line}" non ha un indirizzo https://`);
+          else list.push({ label: label || url, url });
+        }
+        values[f.name] = list;
+        break;
+      }
+      case "gallery":
+      case "files": {
+        // Si tengono le voci attuali non spuntate in "Rimuovi"; i file nuovi li aggiunge uploadFiles.
+        const removed = new Set(form.getAll(`${f.name}__remove`).map(String));
+        values[f.name] = form
+          .getAll(`${f.name}__keep`)
+          .map((v) => JSON.parse(String(v)) as ProjectImage | ProjectFile)
+          .filter((item) => !removed.has(item.url));
+        break;
+      }
       case "select":
         values[f.name] = ["level", "size"].includes(f.name) && /^\d$/.test(raw) ? Number(raw) : raw;
         break;
       default:
         values[f.name] = raw || null;
     }
-    if (f.required && f.kind !== "localized" && f.kind !== "boolean" && !raw) errors.push(`${f.label}: campo obbligatorio`);
+    if (f.required && !["localized", "boolean", "slug", "gallery", "files", "links"].includes(f.kind) && !raw) errors.push(`${f.label}: campo obbligatorio`);
   }
   return { values, errors };
 }
 
-const imageTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
-const MAX_IMAGE = 4 * 1024 * 1024;
+export function slugify(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
 
-// Carica su Vercel Blob i file scelti nei campi immagine e mette l'indirizzo nei valori.
-export async function uploadImages(
-  fields: Field[],
-  form: FormData,
-  values: Row,
-  errors: string[],
-  put: (path: string, file: File) => Promise<{ url: string }>,
-) {
+const imageTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const MAX_FILE = 4 * 1024 * 1024;
+
+export type Storage = {
+  saveImage: (file: File, options: { maxWidth: number; watermark: boolean }) => Promise<string>;
+  saveFile: (file: File) => Promise<string>;
+};
+
+// Carica i file scelti nei campi immagine, galleria e allegati e aggiorna i valori.
+export async function uploadFiles(fields: Field[], form: FormData, values: Row, errors: string[], storage: Storage) {
+  const chosen = (name: string) => form.getAll(name).filter((f): f is File => f instanceof File && f.size > 0);
+  const tooBig = (f: Field, file: File) => file.size > MAX_FILE && errors.push(`${f.label}: "${file.name}" supera 4 MB`);
+
   for (const f of fields) {
-    if (f.kind !== "image") continue;
-    const file = form.get(`${f.name}__file`);
-    if (!(file instanceof File) || file.size === 0) continue;
-    if (!imageTypes.includes(file.type)) {
-      errors.push(`${f.label}: usa un file JPG, PNG, WebP o AVIF`);
-      continue;
+    if (f.kind === "image") {
+      const [file] = chosen(`${f.name}__file`);
+      if (!file || tooBig(f, file)) continue;
+      if (!imageTypes.includes(file.type)) {
+        errors.push(`${f.label}: usa un file JPG, PNG, WebP o AVIF`);
+        continue;
+      }
+      values[f.name] = await storage.saveImage(file, { maxWidth: f.maxWidth ?? 2000, watermark: f.watermark ?? false });
     }
-    if (file.size > MAX_IMAGE) {
-      errors.push(`${f.label}: il file supera 4 MB`);
-      continue;
+    if (f.kind === "gallery") {
+      const list = values[f.name] as ProjectImage[];
+      for (const file of chosen(`${f.name}__files`)) {
+        if (tooBig(f, file)) continue;
+        if (!imageTypes.includes(file.type)) {
+          errors.push(`${f.label}: "${file.name}" non è un'immagine JPG, PNG, WebP o AVIF`);
+          continue;
+        }
+        list.push({ url: await storage.saveImage(file, { maxWidth: 2000, watermark: false }), alt: "" });
+      }
     }
-    const ext = file.type.split("/")[1].replace("jpeg", "jpg");
-    values[f.name] = (await put(`immagini/${crypto.randomUUID()}.${ext}`, file)).url;
+    if (f.kind === "files") {
+      const list = values[f.name] as ProjectFile[];
+      for (const file of chosen(`${f.name}__files`)) {
+        if (tooBig(f, file)) continue;
+        list.push({ name: file.name, url: await storage.saveFile(file), size: file.size });
+      }
+    }
   }
 }

@@ -48,8 +48,12 @@ export const profile = pgTable("profile", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Il "percorso": attestati, qualifiche, attività ed esperienze di lavoro.
+export const pathKinds = ["attestato", "qualifica", "attivita", "esperienza"] as const;
+
 export const experiences = pgTable("experiences", {
   ...listItem,
+  kind: text("kind").$type<(typeof pathKinds)[number]>().notNull().default("esperienza"),
   company: text("company").notNull(),
   role: localized("role"),
   city: text("city"),
@@ -60,19 +64,34 @@ export const experiences = pgTable("experiences", {
   technologies: text("technologies").array().notNull().default([]),
 });
 
+// Studi: completati, in corso o in programma (per esempio l'università).
+export const studyStatuses = ["completato", "in_corso", "in_programma"] as const;
+
 export const education = pgTable("education", {
   ...listItem,
+  status: text("status").$type<(typeof studyStatuses)[number]>().notNull().default("completato"),
   school: text("school").notNull(),
   title: localized("title"),
+  description: localizedOptional("description"),
   city: text("city"),
   startYear: integer("start_year"),
   endYear: integer("end_year"),
   grade: text("grade"),
 });
 
+export type ProjectImage = { url: string; alt?: string };
+export type ProjectLink = { label: string; url: string };
+export type ProjectFile = { name: string; url: string; size: number };
+
 export const projects = pgTable("projects", {
   ...listItem,
   title: text("title").notNull(),
+  // Indirizzo della pagina del progetto: thoadd.com/progetti/<slug>.
+  slug: text("slug").unique(),
+  body: localizedOptional("body"),
+  gallery: jsonb("gallery").$type<ProjectImage[]>().notNull().default([]),
+  links: jsonb("links").$type<ProjectLink[]>().notNull().default([]),
+  attachments: jsonb("attachments").$type<ProjectFile[]>().notNull().default([]),
   kind: localizedOptional("kind"),
   year: integer("year"),
   summary: localized("summary"),

@@ -52,11 +52,29 @@ export async function latestVersion() {
 
 export type CvVersion = NonNullable<Awaited<ReturnType<typeof latestVersion>>>;
 
+// Le versioni pubblicate prima di un cambio di schema non hanno i campi nuovi:
+// li completiamo con i valori predefiniti, così ogni versione resta ripristinabile.
+function normalize(c: CvContent): CvContent {
+  return {
+    ...c,
+    experiences: c.experiences.map((e) => ({ ...e, kind: e.kind ?? "esperienza" })),
+    education: c.education.map((e) => ({ ...e, status: e.status ?? "completato", description: e.description ?? null })),
+    projects: c.projects.map((p, i) => ({
+      ...p,
+      slug: p.slug ?? `progetto-${i + 1}`,
+      body: p.body ?? null,
+      gallery: p.gallery ?? [],
+      links: p.links ?? [],
+      attachments: p.attachments ?? [],
+    })),
+  };
+}
+
 // Il sito pubblico mostra solo l'ultima versione pubblicata; prima della prima
 // pubblicazione mostra la bozza, così la home non resta mai vuota.
 export async function loadPublishedContent() {
   const version = await latestVersion();
-  const content = version ? (version.snapshot as CvContent) : await loadDraftContent();
+  const content = version ? normalize(version.snapshot as CvContent) : await loadDraftContent();
   return { ...content, cv: version };
 }
 

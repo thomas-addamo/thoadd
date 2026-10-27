@@ -6,7 +6,10 @@
   "exports": {
     "./tokens.css": "./src/tokens.css",
     "./fonts": "./src/fonts.ts",
-    "./monogram": "./src/monogram.tsx"
+    "./monogram": "./src/monogram.tsx",
+    "./theme": "./src/theme.tsx",
+    "./icon.svg": "./src/icon.svg",
+    "./theme-script": "./src/theme-script.ts"
   },
   "peerDependencies": {
     "next": "*",

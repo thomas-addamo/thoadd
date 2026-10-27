@@ -13,5 +13,5 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
   if (!secret || token !== secret) notFound();
 
   const [draft, cv] = await Promise.all([loadDraftContent(), latestVersion()]);
-  return <HomePage content={{ ...draft, cv }} lang={lang === "en" ? "en" : "it"} intro={false} />;
+  return <HomePage content={{ ...draft, cv }} lang={lang === "en" ? "en" : "it"} intro={false} photoSrc={`/foto?token=${encodeURIComponent(secret)}`} />;
 }

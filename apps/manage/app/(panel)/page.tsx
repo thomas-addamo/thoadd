@@ -51,7 +51,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
         <form action={publish}>
           <ConfirmButton
             message="Pubblicare la bozza attuale su thoadd.com?"
-            className="inline-flex h-14 items-center rounded-full bg-night px-7 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-pill)]"
+            className="inline-flex h-14 items-center rounded-full bg-pill px-7 font-medium text-pill-ink transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-pill)]"
           >
             Pubblica
           </ConfirmButton>
@@ -79,20 +79,20 @@ export default async function Overview({ searchParams }: { searchParams: Promise
       <section className="mb-8">
         <div className="mb-3 flex items-center justify-between gap-4">
           <h2 className="font-display m-0 text-[24px] font-normal">Anteprima della bozza</h2>
-          <div className="flex rounded-full border border-haze bg-white/60 p-1 text-[13px]">
+          <div className="flex rounded-full border border-haze bg-glass p-1 text-[13px]">
             {(["it", "en"] as const).map((code) => (
               <a
                 key={code}
                 href={`/?lingua=${code}`}
                 aria-current={code === lang ? "true" : undefined}
-                className={`grid h-9 min-w-11 place-items-center rounded-full no-underline ${code === lang ? "bg-white font-medium text-ink shadow-sm" : "text-slate"}`}
+                className={`grid h-9 min-w-11 place-items-center rounded-full no-underline ${code === lang ? "bg-cloud font-medium text-ink shadow-sm" : "text-slate"}`}
               >
                 {code.toUpperCase()}
               </a>
             ))}
           </div>
         </div>
-        <div className="overflow-hidden rounded-[var(--radius-sheet)] border border-haze bg-white shadow-[var(--shadow-sheet)]">
+        <div className="overflow-hidden rounded-[var(--radius-sheet)] border border-haze bg-cloud shadow-[var(--shadow-sheet)]">
           <iframe src={previewUrl} title="Anteprima di thoadd.com con la bozza" className="block h-[70vh] w-full" />
         </div>
       </section>

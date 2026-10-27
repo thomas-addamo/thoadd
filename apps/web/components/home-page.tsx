@@ -1,12 +1,11 @@
 import type { Content } from "@thoadd/db/content";
-import { ui, type Lang } from "@/lib/i18n";
-import { Footer } from "./footer";
-import { Header } from "./header";
+import type { Lang } from "@/lib/i18n";
 import { Hero } from "./hero";
 import { Intro } from "./intro";
-import { Education, Experiences, Faq, Profile, Projects, Skills } from "./sections";
+import { Faq, Journey, Profile, Projects, Skills, Studies } from "./sections";
+import { SiteShell } from "./site-shell";
 
-export function HomePage({ content, lang, intro = true }: { content: Content; lang: Lang; intro?: boolean }) {
+export function HomePage({ content, lang, intro = true, photoSrc = "/foto" }: { content: Content; lang: Lang; intro?: boolean; photoSrc?: string }) {
   const me = content.profile;
   const personLd = {
     "@context": "https://schema.org",
@@ -20,26 +19,16 @@ export function HomePage({ content, lang, intro = true }: { content: Content; la
 
   return (
     <>
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-night focus:px-5 focus:py-3 focus:text-white"
-      >
-        {ui[lang].skip}
-      </a>
-      {intro && <Intro lang={lang} name={me.fullName} />}
-      <div id="top" className="sky">
-        <Header lang={lang} cv={content.cv} />
-        <main id="main">
-          <Hero content={content} lang={lang} />
-          <Profile content={content} lang={lang} />
-          <Experiences content={content} lang={lang} />
-          <Projects content={content} lang={lang} />
-          <Skills content={content} lang={lang} />
-          <Education content={content} lang={lang} />
-          <Faq content={content} lang={lang} />
-        </main>
-        <Footer content={content} lang={lang} />
-      </div>
+      {intro && <Intro lang={lang} />}
+      <SiteShell content={content} lang={lang} onHome>
+        <Hero content={content} lang={lang} />
+        <Profile content={content} lang={lang} photoSrc={photoSrc} />
+        <Journey content={content} lang={lang} />
+        <Projects content={content} lang={lang} />
+        <Skills content={content} lang={lang} />
+        <Studies content={content} lang={lang} />
+        <Faq content={content} lang={lang} />
+      </SiteShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
     </>
   );

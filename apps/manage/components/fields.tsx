@@ -2,7 +2,7 @@ import type { Localized } from "@thoadd/db";
 import type { Field } from "@/lib/sections";
 
 const input =
-  "w-full rounded-2xl border border-haze bg-white px-4 py-3 text-[15px] text-ink outline-none transition focus:border-iris focus:ring-3 focus:ring-aura/30";
+  "w-full rounded-2xl border border-haze bg-cloud px-4 py-3 text-[15px] text-ink outline-none transition focus:border-iris focus:ring-3 focus:ring-aura/30";
 
 function Label({ field, htmlFor, suffix }: { field: Field; htmlFor: string; suffix?: string }) {
   return (
@@ -58,7 +58,7 @@ export function FieldInput({ field, value, idPrefix }: { field: Field; value: un
             type="file"
             name={`${field.name}__file`}
             accept="image/jpeg,image/png,image/webp,image/avif"
-            className="text-[14px] file:mr-3 file:h-10 file:rounded-full file:border file:border-haze file:bg-white file:px-4 file:text-ink"
+            className="text-[14px] file:mr-3 file:h-10 file:rounded-full file:border file:border-haze file:bg-cloud file:px-4 file:text-ink"
           />
           {current && (
             <label className="flex items-center gap-2 text-[14px] text-slate">
@@ -66,6 +66,63 @@ export function FieldInput({ field, value, idPrefix }: { field: Field; value: un
             </label>
           )}
         </div>
+        {hint}
+      </div>
+    );
+  }
+
+  if (field.kind === "gallery" || field.kind === "files") {
+    const items = (value as { url: string; name?: string; size?: number }[] | null) ?? [];
+    const gallery = field.kind === "gallery";
+    return (
+      <div className="col-span-full">
+        <Label field={field} htmlFor={id} />
+        {items.length > 0 && (
+          <ul className={`m-0 mb-3 list-none p-0 ${gallery ? "grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-3" : "flex flex-col gap-2"}`}>
+            {items.map((item) => (
+              <li key={item.url} className={gallery ? "" : "flex items-center justify-between gap-3 rounded-2xl border border-haze px-4 py-2.5"}>
+                <input type="hidden" name={`${field.name}__keep`} value={JSON.stringify(item)} />
+                {gallery ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.url} alt="" className="aspect-square w-full rounded-2xl object-cover shadow-[inset_0_0_0_1px_var(--color-haze)]" />
+                ) : (
+                  <a href={item.url} target="_blank" rel="noopener" className="truncate text-[14px]">
+                    {item.name}
+                  </a>
+                )}
+                <label className={`flex items-center gap-2 text-[13px] text-slate ${gallery ? "mt-1.5" : "flex-none"}`}>
+                  <input type="checkbox" name={`${field.name}__remove`} value={item.url} className="size-4 accent-iris" /> Rimuovi
+                </label>
+              </li>
+            ))}
+          </ul>
+        )}
+        <input
+          id={id}
+          type="file"
+          multiple
+          name={`${field.name}__files`}
+          accept={gallery ? "image/jpeg,image/png,image/webp,image/avif" : undefined}
+          className="text-[14px] file:mr-3 file:h-10 file:rounded-full file:border file:border-haze file:bg-cloud file:px-4 file:text-ink"
+        />
+        {hint}
+      </div>
+    );
+  }
+
+  if (field.kind === "links") {
+    const list = (value as { label: string; url: string }[] | null) ?? [];
+    return (
+      <div className="col-span-full">
+        <Label field={field} htmlFor={id} />
+        <textarea
+          id={id}
+          name={field.name}
+          rows={3}
+          defaultValue={list.map((l) => `${l.label} | ${l.url}`).join("\n")}
+          placeholder="Demo | https://…"
+          className={`${input} resize-y font-mono text-[14px]`}
+        />
         {hint}
       </div>
     );
@@ -96,7 +153,7 @@ export function FieldInput({ field, value, idPrefix }: { field: Field; value: un
     );
   }
 
-  const type = { text: "text", url: "url", email: "email", number: "number", date: "date", tags: "text" }[field.kind as "text"];
+  const type = { text: "text", url: "url", email: "email", number: "number", date: "date", tags: "text", slug: "text" }[field.kind as "text"];
   const text = field.kind === "tags" ? ((value as string[] | null) ?? []).join(", ") : value == null ? "" : String(value);
   return (
     <div className={field.kind === "url" ? "md:col-span-2" : undefined}>
@@ -119,7 +176,7 @@ export function Fields({ fields, values, idPrefix }: { fields: Field[]; values: 
 
 export function SaveButton({ children = "Salva" }: { children?: React.ReactNode }) {
   return (
-    <button type="submit" className="inline-flex h-12 items-center rounded-full bg-night px-6 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-pill)]">
+    <button type="submit" className="inline-flex h-12 items-center rounded-full bg-pill px-6 font-medium text-pill-ink transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-pill)]">
       {children}
     </button>
   );

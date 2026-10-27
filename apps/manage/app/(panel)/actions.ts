@@ -7,9 +7,8 @@ import { loadDraftContent, type CvContent } from "@thoadd/db/content";
 import { renderCvPdf } from "@thoadd/cv-pdf";
 import { put } from "@vercel/blob";
 import { requireSession } from "@/lib/session";
-import { findSection, parseFields, profileFields, uploadImages } from "@/lib/sections";
-
-const putImage = (path: string, file: File) => put(path, file, { access: "public", contentType: file.type });
+import { findSection, parseFields, profileFields, uploadFiles } from "@/lib/sections";
+import { blobStorage } from "@/lib/storage";
 
 const back = (path: string, params: Record<string, string>) => redirect(`${path}?${new URLSearchParams(params)}`);
 
@@ -26,7 +25,7 @@ function sectionOrThrow(slug: string) {
 export async function saveProfile(form: FormData) {
   await requireSession();
   const { values, errors } = parseFields(profileFields, form);
-  await uploadImages(profileFields, form, values, errors, putImage);
+  await uploadFiles(profileFields, form, values, errors, blobStorage);
   if (errors.length) back("/profilo", { errore: errors.join(" · ") });
   await getDb()
     .update(profile)
@@ -40,17 +39,25 @@ export async function saveItem(slug: string, form: FormData) {
   await requireSession();
   const { section, t } = sectionOrThrow(slug);
   const { values, errors } = parseFields(section.fields, form);
-  await uploadImages(section.fields, form, values, errors, putImage);
+  await uploadFiles(section.fields, form, values, errors, blobStorage);
   const id = Number(form.get("id")) || null;
   const path = `/${slug}`;
   if (errors.length) back(path, { errore: errors.join(" · "), ...(id ? { apri: String(id) } : { nuovo: "1" }) });
 
   const db = getDb();
-  if (id) {
-    await db.update(t).set({ ...values, updatedAt: new Date() } as never).where(eq(t.id, id));
-  } else {
-    const [last] = await db.select({ position: t.position }).from(t).orderBy(desc(t.position)).limit(1);
-    await db.insert(t).values({ ...values, position: (last?.position ?? -1) + 1 } as never);
+  try {
+    if (id) {
+      await db.update(t).set({ ...values, updatedAt: new Date() } as never).where(eq(t.id, id));
+    } else {
+      const [last] = await db.select({ position: t.position }).from(t).orderBy(desc(t.position)).limit(1);
+      await db.insert(t).values({ ...values, position: (last?.position ?? -1) + 1 } as never);
+    }
+  } catch (error) {
+    // L'unico vincolo che un modulo può violare è l'indirizzo unico della pagina progetto.
+    if (String((error as { cause?: unknown })?.cause ?? error).includes("unique")) {
+      back(path, { errore: "Esiste già un progetto con questo indirizzo: cambialo", ...(id ? { apri: String(id) } : { nuovo: "1" }) });
+    }
+    throw error;
   }
   revalidatePath("/", "layout");
   back(path, { ok: "Salvato" });

@@ -1,36 +1,98 @@
-/* Token di Atmosfera: stessi nomi del brief e del design. */
-@theme {
-  --color-cloud: #ffffff;
-  --color-mist: #f4f6fb;
-  --color-haze: #dde3f3;
-  --color-haze-strong: #c9d2ee;
-  --color-aura: #8fa6e0;
-  --color-iris: #3d4fb8;
-  --color-ink: #111318;
-  --color-slate: #5b6170;
-  --color-night: #0e1016;
-  --color-dawn: #f6e3da;
+/* Token di Atmosfera: stessi nomi del brief e del design.
+   I colori passano da variabili che cambiano con il tema (data-theme su <html>). */
+@theme inline {
+  --color-cloud: var(--t-cloud);
+  --color-mist: var(--t-mist);
+  --color-haze: var(--t-haze);
+  --color-haze-strong: var(--t-haze-strong);
+  --color-aura: var(--t-aura);
+  --color-iris: var(--t-iris);
+  --color-ink: var(--t-ink);
+  --color-slate: var(--t-slate);
+  --color-night: var(--t-night);
+  --color-dawn: var(--t-dawn);
+  --color-glass: var(--t-glass);
+  --color-pill: var(--t-pill);
+  --color-pill-ink: var(--t-pill-ink);
 
   --font-display: var(--font-clash), "Outfit", sans-serif;
   --font-sans: var(--font-general), "Hanken Grotesk", system-ui, sans-serif;
   --font-serif: var(--font-instrument), serif;
 
+  /* Raggi annidati: interno = esterno − spazio tra i bordi (32 − 16 = 16, 24 − 8 = 16…). */
   --radius-sheet: 32px;
   --radius-card: 24px;
+  --radius-inner: 16px;
 
-  --shadow-sheet: 0 30px 60px -40px rgb(61 79 184 / 0.3);
-  --shadow-card: 0 50px 100px -50px rgb(61 79 184 / 0.32), 0 2px 6px rgb(61 79 184 / 0.05);
-  --shadow-lift: 0 60px 120px -40px rgb(61 79 184 / 0.42), 0 2px 8px rgb(61 79 184 / 0.06);
-  --shadow-pill: 0 18px 36px -14px rgb(61 79 184 / 0.55);
+  --shadow-sheet: var(--t-shadow-sheet);
+  --shadow-card: var(--t-shadow-card);
+  --shadow-lift: var(--t-shadow-lift);
+  --shadow-pill: var(--t-shadow-pill);
+}
+
+:root {
+  color-scheme: light;
+  --t-cloud: #ffffff;
+  --t-mist: #f4f6fb;
+  --t-haze: #dde3f3;
+  --t-haze-strong: #c9d2ee;
+  --t-aura: #8fa6e0;
+  --t-iris: #3d4fb8;
+  --t-ink: #111318;
+  --t-slate: #5b6170;
+  --t-night: #0e1016;
+  --t-dawn: #f6e3da;
+  --t-glass: rgb(255 255 255 / 0.6);
+  --t-pill: #0e1016;
+  --t-pill-ink: #ffffff;
+  --t-dots: #bfcbeb;
+  --t-wordmark: rgb(255 255 255 / 0.72);
+  --t-shadow-sheet: 0 30px 60px -40px rgb(61 79 184 / 0.3);
+  --t-shadow-card: 0 50px 100px -50px rgb(61 79 184 / 0.32), 0 2px 6px rgb(61 79 184 / 0.05);
+  --t-shadow-lift: 0 60px 120px -40px rgb(61 79 184 / 0.42), 0 2px 8px rgb(61 79 184 / 0.06);
+  --t-shadow-pill: 0 18px 36px -14px rgb(61 79 184 / 0.55);
+  /* Il cielo: bianco in alto, nebbia pervinca in fondo. */
+  --t-sky:
+    radial-gradient(60% 40% at 100% 2%, rgb(246 227 218 / 0.7), transparent 70%),
+    radial-gradient(50% 30% at 0% 96%, rgb(246 227 218 / 0.55), transparent 70%),
+    linear-gradient(180deg, #fff 0%, #f4f6fb 14%, #f4f6fb 46%, #e9edf9 66%, #dce3f7 80%, #b8c6ec 92%, #8fa6e0 100%);
+}
+
+/* Atmosfera di notte: blu profondo, il pervinca resta la luce. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --t-cloud: #121624;
+  --t-mist: #0a0c14;
+  --t-haze: #242a3d;
+  --t-haze-strong: #313952;
+  --t-aura: #8fa6e0;
+  --t-iris: #aab8ff;
+  --t-ink: #eef1f8;
+  --t-slate: #9aa2b5;
+  --t-night: #eef1f8;
+  --t-dawn: #3a2c36;
+  --t-glass: rgb(18 22 36 / 0.62);
+  --t-pill: #eef1f8;
+  --t-pill-ink: #0a0c14;
+  --t-dots: #3b4669;
+  --t-wordmark: rgb(170 184 255 / 0.32);
+  --t-shadow-sheet: 0 30px 60px -40px rgb(0 0 0 / 0.6);
+  --t-shadow-card: 0 50px 100px -50px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(143 166 224 / 0.08);
+  --t-shadow-lift: 0 60px 120px -40px rgb(61 79 184 / 0.45), 0 0 0 1px rgb(143 166 224 / 0.14);
+  --t-shadow-pill: 0 18px 36px -14px rgb(143 166 224 / 0.45);
+  --t-sky:
+    radial-gradient(60% 40% at 100% 2%, rgb(143 166 224 / 0.14), transparent 70%),
+    radial-gradient(50% 30% at 0% 96%, rgb(246 227 218 / 0.08), transparent 70%),
+    linear-gradient(180deg, #0a0c14 0%, #0c0f1a 30%, #0e1220 55%, #141a30 72%, #1d2648 86%, #2f3f78 96%, #3f54a0 100%);
 }
 
 @utility bg-atmosfera {
   background:
-    radial-gradient(40% 60% at 0% 100%, rgb(246 227 218 / 0.8), transparent 70%),
-    linear-gradient(180deg, var(--color-cloud) 0%, #dce3f7 45%, var(--color-aura) 100%);
+    radial-gradient(40% 60% at 0% 100%, color-mix(in srgb, var(--t-dawn) 80%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--t-cloud) 0%, color-mix(in srgb, var(--t-aura) 30%, var(--t-cloud)) 45%, var(--t-aura) 100%);
 }
 
 @utility dots {
-  background-image: radial-gradient(circle, #bfcbeb 1.1px, transparent 1.7px);
+  background-image: radial-gradient(circle, var(--t-dots) 1.1px, transparent 1.7px);
   background-size: 8px 8px;
 }

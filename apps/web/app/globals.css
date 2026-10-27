@@ -2,210 +2,361 @@
 @import "@thoadd/ui/tokens.css";
 @source "../../../packages/ui/src";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @layer base {
-html {
-  background: var(--color-mist);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  html {
+    background: var(--color-mist);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+  }
+  body {
+    font-size: clamp(16px, 1.2vw, 17px);
+    line-height: 1.6;
+  }
+  a {
+    color: var(--color-iris);
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-aura) 40%, transparent);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-iris);
+    outline-offset: 3px;
+  }
 }
 
-body {
-  font-size: clamp(16px, 1.2vw, 17px);
-  line-height: 1.6;
-}
-
-a {
-  color: var(--color-iris);
-}
-a:hover {
-  color: var(--color-ink);
-}
+/* Il cambio di tema dissolve tutta la pagina invece di scattare. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
 }
 
 @layer components {
-/* Il cielo della pagina: bianco in alto, nebbia pervinca in fondo. */
-.sky {
-  background:
-    radial-gradient(60% 40% at 100% 2%, rgb(246 227 218 / 0.7), transparent 70%),
-    radial-gradient(50% 30% at 0% 96%, rgb(246 227 218 / 0.55), transparent 70%),
-    linear-gradient(180deg, #fff 0%, #f4f6fb 14%, #f4f6fb 46%, #e9edf9 66%, #dce3f7 80%, #b8c6ec 92%, #8fa6e0 100%);
-  overflow: hidden;
-}
+  /* "clip" e non "hidden": con hidden la navbar fissa smette di funzionare. */
+  .sky {
+    background: var(--t-sky);
+    overflow-x: clip;
+  }
 
-/* Griglia del design: 12 colonne su desktop, una sola colonna sotto i 900 px. */
-.wrap {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding-inline: clamp(16px, 5.6vw, 80px);
-  box-sizing: border-box;
-}
-.g12 {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: 24px;
-}
-.c1-7 { grid-column: 1 / span 7; }
-.c8-12 { grid-column: 8 / span 5; }
-.c1-4 { grid-column: 1 / span 4; }
-.c5-12 { grid-column: 5 / span 8; }
-.c1-3 { grid-column: 1 / span 3; }
-.c4-8 { grid-column: 4 / span 5; }
-.c4-9 { grid-column: 4 / span 6; }
-.c9-12 { grid-column: 9 / span 4; }
-.c10-12 { grid-column: 10 / span 3; }
-.p1 { grid-column: 1 / span 5; grid-row: 1; z-index: 1; }
-.p2 { grid-column: 5 / span 5; grid-row: 1; margin-top: 96px; z-index: 2; }
-.p3 { grid-column: 8 / span 5; grid-row: 1; margin-top: 192px; z-index: 3; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-inline: clamp(16px, 5.6vw, 80px);
+    box-sizing: border-box;
+  }
+  .g12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  .c1-7 { grid-column: 1 / span 7; }
+  .c1-8 { grid-column: 1 / span 8; }
+  .c8-12 { grid-column: 8 / span 5; }
+  .c1-4 { grid-column: 1 / span 4; }
+  .c5-12 { grid-column: 5 / span 8; }
+  .c1-3 { grid-column: 1 / span 3; }
+  .c4-8 { grid-column: 4 / span 5; }
+  .c4-9 { grid-column: 4 / span 6; }
+  .c9-12 { grid-column: 9 / span 4; }
+  .c10-12 { grid-column: 10 / span 3; }
+  .p1 { grid-column: 1 / span 5; grid-row: 1; z-index: 1; }
+  .p2 { grid-column: 5 / span 5; grid-row: 1; margin-top: 96px; z-index: 2; }
+  .p3 { grid-column: 8 / span 5; grid-row: 1; margin-top: 192px; z-index: 3; }
 
-.display { font-family: var(--font-display); }
-.title-xl {
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-size: clamp(52px, 6.7vw, 96px);
-  line-height: 0.98;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-.title-l {
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-size: clamp(36px, 3.9vw, 56px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-.title-m {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(24px, 2.2vw, 32px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-.accent {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
-.label { font-size: 13px; color: var(--color-slate); }
+  .display { font-family: var(--font-display); }
+  .title-hero {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(64px, 12vw, 196px);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+  }
+  .title-l {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(36px, 3.9vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .title-m {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(24px, 2.2vw, 32px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .label { font-size: 13px; color: var(--color-slate); }
 
-/* Pulsanti a pillola e link. */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border-radius: 999px;
-  background: var(--color-night);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s, background 0.3s;
-}
-.pill:hover {
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-pill);
-}
-.pill:active { transform: scale(0.98); background: #000; }
-.pill[aria-disabled="true"] {
-  background: var(--color-haze);
-  color: var(--color-slate);
-  pointer-events: none;
-}
-.ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: 999px;
-  border: 1px solid var(--color-haze);
-  background: rgb(255 255 255 / 0.5);
-  color: var(--color-ink);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background 0.3s, box-shadow 0.5s;
-}
-.ghost:hover {
-  background: #fff;
-  color: var(--color-ink);
-  box-shadow: 0 12px 24px -16px rgb(61 79 184 / 0.5);
-}
-.pill:focus-visible,
-.ghost:focus-visible,
-.lang:focus-visible,
-.navlink:focus-visible,
-summary:focus-visible {
-  outline: 3px solid var(--color-iris);
-  outline-offset: 3px;
-}
-.navlink {
-  color: var(--color-slate);
-  text-decoration: none;
-  font-size: 15px;
-  padding: 12px 0;
-}
-.navlink:hover { color: var(--color-ink); }
-.plain { color: var(--color-ink); text-decoration: none; }
-.plain:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--color-aura); }
+  /* Pulsanti a pillola: "magnetici" quando hanno data-magnetic (vedi interactions.tsx). */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 999px;
+    background: var(--color-pill);
+    color: var(--color-pill-ink);
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s, opacity 0.3s;
+  }
+  .pill:hover {
+    color: var(--color-pill-ink);
+    box-shadow: var(--shadow-pill);
+  }
+  .pill:active { opacity: 0.85; }
+  .pill[aria-disabled="true"] {
+    background: var(--color-haze);
+    color: var(--color-slate);
+    pointer-events: none;
+  }
+  .ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--color-haze);
+    background: var(--color-glass);
+    color: var(--color-ink);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.3s, box-shadow 0.5s, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.3s;
+  }
+  .ghost:hover {
+    background: var(--color-cloud);
+    color: var(--color-ink);
+    border-color: var(--color-haze-strong);
+    box-shadow: 0 12px 24px -16px rgb(61 79 184 / 0.5);
+  }
+  .ghost .arrow,
+  .pill .arrow { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .ghost:hover .arrow,
+  .pill:hover .arrow,
+  .link-arrow:hover .arrow { transform: translateX(4px); }
 
-/* Fogli e righe che si sollevano. */
-.sheet { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.7s; }
-.sheet:hover {
-  transform: translateY(-14px);
-  box-shadow: 0 60px 120px -40px rgb(61 79 184 / 0.38), 0 2px 8px rgb(61 79 184 / 0.06);
-}
-.row { transition: background 0.5s; }
-.row:hover { background: rgb(255 255 255 / 0.6); }
+  /* Link della navbar: la linea cresce da sinistra. */
+  .navlink {
+    position: relative;
+    color: var(--color-slate);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 10px 0;
+    transition: color 0.3s;
+  }
+  .navlink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .navlink:hover,
+  .navlink[aria-current="true"] { color: var(--color-ink); }
+  .navlink:hover::after { transform: scaleX(1); }
 
-details > summary { list-style: none; cursor: pointer; }
-details > summary::-webkit-details-marker { display: none; }
-details[open] .plus { transform: rotate(45deg); border-color: var(--color-iris); color: var(--color-iris); }
-.plus { transition: transform 0.4s; }
+  .plain { color: var(--color-ink); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .plain:hover { color: var(--color-ink); background-size: 100% 1px; }
 
-/* Vetro dell'hero. */
-@keyframes drift {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-14px) rotate(4deg); }
-}
-@keyframes spin { to { transform: rotateX(64deg) rotateZ(360deg); } }
-.orb { animation: drift 12s ease-in-out infinite; }
-.ring { animation: spin 40s linear infinite; }
+  /* Fogli che si sollevano e si inclinano verso il cursore (data-tilt). */
+  .sheet {
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.7s;
+    transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  }
+  .sheet:hover {
+    --lift: -14px;
+    box-shadow: var(--shadow-lift);
+  }
 
-/* Il nome gigante del footer sale dal bordo mentre arrivi in fondo. */
-@keyframes rise {
-  from { transform: translateY(28%); opacity: 0.2; }
-  to { transform: translateY(0); opacity: 1; }
-}
-@supports (animation-timeline: view()) {
-  .wordmark { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 55%; }
-}
+  /* Righe illuminate dove passa il mouse (data-spot imposta --mx e --my). */
+  .spot {
+    position: relative;
+    isolation: isolate;
+  }
+  .spot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-aura) 18%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .spot:hover::before { opacity: 1; }
 
-/* I fogli salgono con dissolvenza quando entrano nella pagina. */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@supports (animation-timeline: view()) {
-  .reveal { animation: fade-up linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
-}
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .plus { transform: rotate(45deg); border-color: var(--color-iris); color: var(--color-iris); }
+  .plus { transition: transform 0.4s, border-color 0.3s; }
 
-/* Apertura: nascosta se già vista (classe messa prima del primo disegno). */
-@keyframes halo { 0% { transform: scale(0.4); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes emerge { 0% { filter: blur(28px); opacity: 0; letter-spacing: 0.04em; } 100% { filter: blur(0); opacity: 1; letter-spacing: -0.03em; } }
-@keyframes intro-fade { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
-.intro { animation: intro-out 0.8s 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
-.intro .a-halo { animation: halo 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.intro .a-name { animation: emerge 1.5s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.intro .a-sub { animation: intro-fade 0.8s 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.intro-seen .intro,
-.intro.is-done { display: none; }
+  .skill {
+    display: inline-block;
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s;
+  }
+  .skill:hover { transform: translateY(-4px) scale(1.04); color: var(--color-iris); }
 
+  /* Le lettere del nome nell'hero: si sollevano vicino al cursore (--p da 0 a 1). */
+  .hero-letter {
+    display: inline-block;
+    transform: translateY(calc(var(--p, 0) * -0.08em));
+    filter: drop-shadow(0 calc(var(--p, 0) * 0.08em) calc(var(--p, 0) * 0.12em) color-mix(in srgb, var(--color-aura) 50%, transparent));
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.5s, color 0.5s;
+  }
+  .scroll-hint::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 50%;
+    background: var(--color-iris);
+    animation: scroll-hint 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-hint {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(200%); }
+  }
+  .hero-glow {
+    background: radial-gradient(520px circle at var(--hx, 70%) var(--hy, 30%), color-mix(in srgb, var(--color-aura) 30%, transparent), transparent 65%);
+    transition: background 0.2s;
+  }
+
+  /* Rivelazioni allo scroll: data-reveal entra, le parole (.w) una dopo l'altra. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--d, 0) * 80ms);
+  }
+  [data-reveal][data-in] { opacity: 1; transform: none; }
+  [data-words] .w {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em);
+    filter: blur(6px);
+    transition: opacity 0.7s, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s;
+    transition-delay: calc(var(--i, 0) * 60ms);
+  }
+  [data-words][data-in] .w { opacity: 1; transform: none; filter: none; }
+
+  /* Il nome gigante del footer sale dal bordo mentre arrivi in fondo. */
+  .wordmark { color: var(--t-wordmark); }
+  @keyframes rise {
+    from { transform: translateY(28%); opacity: 0.2; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @supports (animation-timeline: view()) {
+    .wordmark { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 55%; }
+  }
+
+  /* Menu del telefono: il cielo si apre dall'alto come una tenda, poi le voci salgono. */
+  .mobile-menu {
+    background: var(--t-sky);
+    clip-path: inset(0 0 100% 0 round 0 0 32px 32px);
+    visibility: hidden;
+    transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1), visibility 0s 0.6s;
+  }
+  .mobile-menu[data-open] {
+    clip-path: inset(0 0 0 0 round 0);
+    visibility: visible;
+    transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1), visibility 0s;
+  }
+  .mobile-menu .mm-item {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(8px);
+    transition: opacity 0.3s, transform 0.3s, filter 0.3s;
+  }
+  .mobile-menu[data-open] .mm-item {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: opacity 0.6s, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s;
+    transition-delay: calc(0.22s + var(--i, 0) * 0.06s);
+  }
+
+  /* Le sfumature segnaposto dei progetti, più scure e profonde di notte. */
+  [data-theme="dark"] .art { filter: brightness(0.62) saturate(1.15) contrast(1.05); }
+
+  /* Foto protetta: niente selezione, trascinamento o menu (vedi protected-photo.tsx). */
+  .protected {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* ——— Apertura ——— */
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    background: var(--t-sky);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0.6s;
+  }
+  .intro.is-leaving { opacity: 0; visibility: hidden; }
+  .intro.is-done { display: none; }
+  .intro .mono path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+  .intro .mono path:nth-child(2) { animation-delay: 0.18s; }
+  .intro .mono path:nth-child(3) { animation-delay: 0.32s; }
+  .intro .ch {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(0.35em);
+    animation: letter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: calc(0.45s + var(--i) * 0.07s);
+  }
+  /* La seconda "d" arriva specchiata, come un'eco della prima, e si raddrizza. */
+  .intro .ch.echo {
+    transform: translateY(0.35em) scaleX(-1);
+    animation-name: echo;
+  }
+  .intro .halo {
+    position: absolute;
+    width: min(1100px, 160vw);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-aura) 45%, transparent) 0, transparent 62%);
+    animation: halo 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  /* Versione breve (già vista oggi): tutto insieme, in meno di un secondo. */
+  .intro-short .intro .mono path { animation-duration: 0.45s; animation-delay: 0s; }
+  .intro-short .intro .ch { animation-duration: 0.45s; animation-delay: calc(var(--i) * 0.025s); }
+  .intro-short .intro .halo { animation-duration: 0.6s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes letter { to { opacity: 1; filter: blur(0); transform: none; } }
+  @keyframes echo {
+    60% { opacity: 1; filter: blur(0); transform: translateY(0) scaleX(-1); }
+    to { opacity: 1; filter: blur(0); transform: none; }
+  }
+  @keyframes halo { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  /* Senza JavaScript l'apertura sparisce comunque dopo 3 secondi. */
+  @keyframes intro-fallback { to { opacity: 0; visibility: hidden; } }
+  .intro { animation: intro-fallback 0.6s 3s forwards; }
 }
 
 @media (max-width: 900px) {
@@ -220,6 +371,6 @@ details[open] .plus { transform: rotate(45deg); border-color: var(--color-iris);
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .intro { display: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition: none !important; }
+  [data-reveal], [data-words] .w { opacity: 1 !important; transform: none !important; filter: none !important; }
 }
