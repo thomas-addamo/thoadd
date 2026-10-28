@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@thoadd/ui", "@thoadd/db"],
+  // I font servono anche alle immagini di condivisione generate sul server.
+  outputFileTracingIncludes: { "/**": ["./public/fonts/**"] },
   // L'anteprima può stare solo dentro manage.thoadd.com; il resto del sito in nessun iframe.
   async headers() {
     return [

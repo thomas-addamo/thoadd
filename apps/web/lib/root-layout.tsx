@@ -3,6 +3,7 @@ import { fontVariables } from "@thoadd/ui/fonts";
 import { themeScript } from "@thoadd/ui/theme-script";
 import { introScript } from "./intro-script";
 import type { Lang } from "./i18n";
+import { descriptions, pageMetadata } from "./seo";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -12,23 +13,14 @@ export const viewport: Viewport = {
 };
 
 export function siteMetadata(lang: Lang): Metadata {
-  const en = lang === "en";
   return {
     metadataBase: new URL("https://thoadd.com"),
-    title: "Thomas Addamo · Software Developer",
-    description: en
-      ? "Thomas Addamo's CV: experience, projects and skills. Download the PDF."
-      : "Il CV di Thomas Addamo: esperienze, progetti e competenze. Scarica il PDF.",
-    alternates: {
-      canonical: en ? "/en" : "/",
-      languages: { it: "/", en: "/en" },
-    },
-    openGraph: {
-      type: "profile",
-      url: en ? "/en" : "/",
-      siteName: "Thomas Addamo",
-      locale: en ? "en_GB" : "it_IT",
-    },
+    // Home: solo "Thomas Addamo"; le altre pagine: "Copyright · Thomas Addamo".
+    title: { default: "Thomas Addamo", template: "%s · Thomas Addamo" },
+    applicationName: "thoadd",
+    authors: [{ name: "Thomas Addamo", url: "https://thoadd.com" }],
+    creator: "Thomas Addamo",
+    ...pageMetadata({ lang, path: "/", description: descriptions.home[lang] }),
   };
 }
 
