@@ -54,11 +54,12 @@ export const pathKinds = ["attestato", "qualifica", "attivita", "esperienza"] as
 export const experiences = pgTable("experiences", {
   ...listItem,
   kind: text("kind").$type<(typeof pathKinds)[number]>().notNull().default("esperienza"),
-  company: text("company").notNull(),
+  // Ente e date sono facoltativi: un corso o un'attività di volontariato può non averli.
+  company: text("company"),
   role: localized("role"),
   city: text("city"),
   employmentType: localizedOptional("employment_type"),
-  startDate: date("start_date").notNull(),
+  startDate: date("start_date"),
   endDate: date("end_date"),
   description: localizedOptional("description"),
   technologies: text("technologies").array().notNull().default([]),

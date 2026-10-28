@@ -239,7 +239,7 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
               {c.experiences.map((e) => {
                 const from = year(e.startDate);
                 const to = year(e.endDate);
-                const range = !to ? `${from} — ${t.now}` : from === to ? from : `${from} — ${to}`;
+                const range = !from ? "" : !to ? `${from} — ${t.now}` : from === to ? from : `${from} — ${to}`;
                 const bullets = tr(e.description, lang).split("\n").map((l) => l.trim()).filter(Boolean);
                 return (
                   <View key={e.id} style={[s.row, { paddingVertical: px(20) }]} wrap={false}>
@@ -249,7 +249,13 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: px(15), fontWeight: 500 }}>
-                        {tr(e.role, lang)} · <Text style={{ color: color.iris }}>{e.company}</Text>
+                        {tr(e.role, lang)}
+                        {e.company && (
+                          <>
+                            {" · "}
+                            <Text style={{ color: color.iris }}>{e.company}</Text>
+                          </>
+                        )}
                       </Text>
                       {bullets.map((b, i) => (
                         <Text key={i} style={{ marginTop: px(i === 0 ? 8 : 4) }}>

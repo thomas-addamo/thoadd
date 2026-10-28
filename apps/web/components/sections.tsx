@@ -94,7 +94,7 @@ export function Journey({ content, lang }: Props) {
         {content.experiences.map((e, i) => {
           const from = year(e.startDate);
           const to = year(e.endDate);
-          const range = !to ? `${from} — ${t.now}` : from === to ? from : `${from} — ${to}`;
+          const range = !from ? null : !to ? `${from} — ${t.now}` : from === to ? from : `${from} — ${to}`;
           return (
             <li
               key={e.id}
@@ -103,13 +103,13 @@ export function Journey({ content, lang }: Props) {
               className="spot g12 gap-y-4 rounded-[var(--radius-card)] border-b border-haze px-0 py-10 md:-mx-6 md:px-6"
             >
               <div className="c1-3">
-                <p className="display m-0 text-[clamp(24px,2.2vw,32px)] font-light tracking-[-0.01em]">{range}</p>
+                {range && <p className="display m-0 text-[clamp(24px,2.2vw,32px)] font-light tracking-[-0.01em]">{range}</p>}
                 <p className="label m-0 mt-1">{[e.city, tr(e.employmentType, lang)].filter(Boolean).join(" · ")}</p>
               </div>
               <div className="c4-8">
                 <p className="m-0 mb-3 inline-flex rounded-full border border-haze px-3 py-1 text-[12px] text-slate">{t.kinds[e.kind] ?? e.kind}</p>
                 <h3 className="title-m m-0">{tr(e.role, lang)}</h3>
-                <p className="m-0 mt-1.5 font-medium text-iris">{e.company}</p>
+                {e.company && <p className="m-0 mt-1.5 font-medium text-iris">{e.company}</p>}
               </div>
               <div className="c9-12">
                 {e.description && <p className="m-0">{tr(e.description, lang)}</p>}
