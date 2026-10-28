@@ -189,14 +189,15 @@ export function Projects({ content, lang }: Props) {
             const link = href(p.slug);
             return (
               <li key={p.id} data-reveal style={{ "--d": i } as React.CSSProperties} className="border-b border-haze">
-                <div className="spot flex flex-wrap items-center gap-x-8 gap-y-3 rounded-[var(--radius-card)] py-6 md:-mx-6 md:px-6">
-                  <span className="display w-16 text-[20px] font-light text-slate">{p.year ?? "—"}</span>
-                  <span className="min-w-0 flex-1">
-                    <span className="title-m block text-[clamp(20px,1.8vw,26px)]">{p.title}</span>
-                    <span className="label">{[tr(p.kind, lang), ...p.technologies].filter(Boolean).join(" · ")}</span>
+                {/* Telefono: anno e titolo, sotto i dettagli e il pulsante a tutta larghezza. Desktop: una riga. */}
+                <div className="spot grid grid-cols-[3.5rem_minmax(0,1fr)] items-baseline gap-x-4 gap-y-3 rounded-[var(--radius-card)] py-6 md:-mx-6 md:grid-cols-[4rem_minmax(0,1fr)_auto] md:items-center md:gap-x-8 md:px-6">
+                  <span className="display text-[20px] font-light text-slate">{p.year ?? "—"}</span>
+                  <span className="min-w-0">
+                    <span className="title-m block text-[clamp(22px,1.8vw,26px)]">{p.title}</span>
+                    <span className="label mt-1 block text-pretty">{[tr(p.kind, lang), ...p.technologies].filter(Boolean).join(" · ")}</span>
                   </span>
                   {link && (
-                    <Link href={link} data-magnetic className="ghost h-12 px-5 text-[15px]">
+                    <Link href={link} data-magnetic className="ghost col-span-2 h-12 px-5 text-[15px] md:col-span-1">
                       {t.readCase} <span aria-hidden="true" className="arrow">→</span>
                     </Link>
                   )}

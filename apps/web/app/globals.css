@@ -264,7 +264,8 @@
     to { transform: translateY(0); opacity: 1; }
   }
   @supports (animation-timeline: view()) {
-    .wordmark { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 55%; }
+    /* Finisce quando il nome è entrato del tutto: in fondo alla pagina non resta mai a metà (telefono). */
+  .wordmark { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
   }
 
   /* Menu del telefono: il cielo si apre dall'alto come una tenda, poi le voci salgono. */

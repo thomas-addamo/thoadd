@@ -61,7 +61,7 @@ export function Footer({ content, lang, onHome = true }: { content: Content; lan
 
       <p
         aria-hidden="true"
-        className="wordmark display m-0 mt-2 mb-[-0.24em] text-center text-[clamp(104px,30vw,440px)] leading-none font-light tracking-[-0.05em] whitespace-nowrap select-none [mask-image:linear-gradient(180deg,#000_30%,transparent_92%)]"
+        className="wordmark display m-0 mt-2 mb-[calc(-0.1em+env(safe-area-inset-bottom))] text-center text-[clamp(104px,31vw,440px)] leading-none font-light tracking-[-0.05em] whitespace-nowrap select-none [mask-image:linear-gradient(180deg,#000_55%,transparent_100%)] md:mb-[-0.24em] md:[mask-image:linear-gradient(180deg,#000_30%,transparent_92%)]"
       >
         thoadd
       </p>
