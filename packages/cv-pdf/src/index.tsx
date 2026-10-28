@@ -2,6 +2,7 @@ import {
   Defs,
   Document,
   Font,
+  Link,
   Page,
   Path,
   RadialGradient,
@@ -34,7 +35,8 @@ const color = {
 const labels = {
   it: {
     profile: "Profilo",
-    experience: "Esperienze",
+    experience: "Percorso",
+    statuses: { completato: "completato", in_corso: "in corso", in_programma: "in programma" } as Record<string, string>,
     education: "Formazione",
     projects: "Progetti",
     skills: "Competenze",
@@ -47,7 +49,8 @@ const labels = {
   },
   en: {
     profile: "Profile",
-    experience: "Experience",
+    experience: "Journey",
+    statuses: { completato: "completed", in_corso: "in progress", in_programma: "planned" } as Record<string, string>,
     education: "Education",
     projects: "Projects",
     skills: "Skills",
@@ -92,10 +95,10 @@ async function registerFonts(fontBaseUrl: string) {
 }
 
 const s = StyleSheet.create({
-  page: { fontFamily: "General", fontSize: px(13), lineHeight: 1.55, color: color.ink, backgroundColor: "#FFFFFF" },
+  page: { fontFamily: "General", fontSize: px(13), lineHeight: 1.55, color: color.ink, backgroundColor: "#FFFFFF", paddingBottom: px(96) },
   wrap: { paddingHorizontal: px(64) },
   h2: { fontFamily: "Clash", fontWeight: 400, fontSize: px(24), letterSpacing: -0.2, marginBottom: px(8) },
-  row: { flexDirection: "row", paddingVertical: px(16), borderBottomWidth: 0.75, borderBottomColor: color.haze },
+  row: { flexDirection: "row", paddingVertical: px(11), borderBottomWidth: 0.75, borderBottomColor: color.haze },
   dateCol: { width: px(136), marginRight: px(24) },
   strong: { fontWeight: 500 },
   muted: { color: color.slate },
@@ -242,11 +245,13 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
                 const range = !from ? "" : !to ? `${from} — ${t.now}` : from === to ? from : `${from} — ${to}`;
                 const bullets = tr(e.description, lang).split("\n").map((l) => l.trim()).filter(Boolean);
                 return (
-                  <View key={e.id} style={[s.row, { paddingVertical: px(20) }]} wrap={false}>
-                    <View style={s.dateCol}>
-                      <Text style={s.strong}>{range}</Text>
-                      {e.city && <Text style={s.muted}>{e.city}</Text>}
-                    </View>
+                  <View key={e.id} style={[s.row, { paddingVertical: px(16) }]} wrap={false}>
+                    {(range || e.city) && (
+                      <View style={s.dateCol}>
+                        <Text style={s.strong}>{range}</Text>
+                        {e.city && <Text style={s.muted}>{e.city}</Text>}
+                      </View>
+                    )}
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: px(15), fontWeight: 500 }}>
                         {tr(e.role, lang)}
@@ -271,41 +276,13 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
           </View>
         )}
 
-        {(c.education.length > 0 || c.certifications.length > 0) && (
-          <View style={[s.wrap, { marginTop: px(40) }]} wrap={false}>
-            <SectionTitle>{t.education}</SectionTitle>
-            <View style={{ borderTopWidth: 0.75, borderTopColor: color.haze }}>
-              {c.education.map((e) => (
-                <View key={`e${e.id}`} style={s.row}>
-                  <Text style={[s.dateCol, s.strong]}>{[e.startYear, e.endYear].filter(Boolean).join(" — ")}</Text>
-                  <Text style={{ flex: 1 }}>
-                    <Text style={{ fontSize: px(15), fontWeight: 500 }}>
-                      <Rich text={tr(e.title, lang)} accent={color.ink} />
-                    </Text>
-                    {[e.school, e.city].filter(Boolean).length > 0 && ` · ${[e.school, e.city].filter(Boolean).join(", ")}`}
-                  </Text>
-                </View>
-              ))}
-              {c.certifications.map((cert) => (
-                <View key={`c${cert.id}`} style={s.row}>
-                  <Text style={[s.dateCol, s.strong]}>{cert.issuedOn?.slice(0, 4) ?? ""}</Text>
-                  <Text style={{ flex: 1 }}>
-                    <Text style={{ fontSize: px(15), fontWeight: 500 }}>{cert.name}</Text>
-                    {cert.issuer && ` · ${cert.issuer}`}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
         <View style={[s.footer, { bottom: px(40), color: color.slate }]}>
           <Text>{me.fullName} · CV</Text>
           <Text>1 / 2</Text>
         </View>
       </Page>
 
-      <Page size="A4" style={s.page}>
+      <Page size="A4" style={[s.page, { paddingBottom: px(170) }]}>
         {/* Il cielo che si addensa in fondo e il nome gigante tagliato dal bordo. */}
         <Svg style={{ position: "absolute", top: 0, left: 0 }} width={pageW} height={px(1120)} fixed>
           <VerticalFade width={pageW} height={px(1120)} steps={140} stops={[[0, "#FFFFFF"], [0.68, "#FFFFFF"], [0.84, "#E9EDF9"], [1, "#B8C6EC"]]} />
@@ -330,17 +307,52 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
           thoadd
         </Text>
 
+        {(c.education.length > 0 || c.certifications.length > 0) && (
+          <View style={[s.wrap, { marginTop: px(56) }]} wrap={false}>
+            <SectionTitle>{t.education}</SectionTitle>
+            <View style={{ borderTopWidth: 0.75, borderTopColor: color.haze }}>
+              {c.education.map((e) => (
+                <View key={`e${e.id}`} style={s.row}>
+                  <View style={s.dateCol}>
+                    <Text style={s.strong}>{[e.startYear, e.endYear].filter(Boolean).join(" — ") || t.statuses[e.status]}</Text>
+                    {(e.startYear || e.endYear) && <Text style={s.muted}>{t.statuses[e.status]}</Text>}
+                  </View>
+                  <Text style={{ flex: 1 }}>
+                    <Text style={{ fontSize: px(15), fontWeight: 500 }}>
+                      <Rich text={tr(e.title, lang)} accent={color.ink} />
+                    </Text>
+                    {[e.school, e.city].filter(Boolean).length > 0 && ` · ${[e.school, e.city].filter(Boolean).join(", ")}`}
+                  </Text>
+                </View>
+              ))}
+              {c.certifications.map((cert) => (
+                <View key={`c${cert.id}`} style={s.row}>
+                  <Text style={[s.dateCol, s.strong]}>{cert.issuedOn?.slice(0, 4) ?? ""}</Text>
+                  <Text style={{ flex: 1 }}>
+                    <Text style={{ fontSize: px(15), fontWeight: 500 }}>{cert.name}</Text>
+                    {cert.issuer && ` · ${cert.issuer}`}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
         {c.projects.length > 0 && (
-          <View style={[s.wrap, { marginTop: px(64) }]}>
-            <Text style={[s.h2, { marginBottom: px(16) }]}>{t.projects}</Text>
+          <View style={[s.wrap, { marginTop: px(32) }]}>
+            <Text style={[s.h2, { marginBottom: px(12) }]}>{t.projects}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", marginHorizontal: px(-8) }}>
               {c.projects.map((p) => (
-                <View key={p.id} style={{ width: "33.333%", padding: px(8) }} wrap={false}>
-                  <View style={{ padding: px(20), borderRadius: px(24), borderWidth: 0.75, borderColor: color.haze, backgroundColor: "#FFFFFF", minHeight: px(150) }}>
+                <View key={p.id} style={{ width: c.projects.length <= 2 ? "50%" : "33.333%", padding: px(8) }} wrap={false}>
+                  <View style={{ padding: px(20), borderRadius: px(24), borderWidth: 0.75, borderColor: color.haze, backgroundColor: "#FFFFFF", minHeight: px(120) }}>
                     <Text style={[s.muted, { fontSize: px(12) }]}>{[tr(p.kind, lang), p.year].filter(Boolean).join(" · ")}</Text>
                     <Text style={{ marginTop: px(6), fontSize: px(15), fontWeight: 500 }}>{p.title}</Text>
                     <Text style={{ marginTop: px(6) }}>{tr(p.summary, lang)}</Text>
-                    {(p.url ?? p.repoUrl) && <Text style={{ marginTop: px(6), color: color.iris, fontSize: px(12) }}>{(p.url ?? p.repoUrl)!.replace(/^https?:\/\//, "")}</Text>}
+                    {(p.url ?? p.repoUrl) && (
+                      <Link src={(p.url ?? p.repoUrl)!} style={{ marginTop: px(6), color: color.iris, fontSize: px(12), textDecoration: "none" }}>
+                        {p.url ? p.url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0] : `GitHub · ${p.repoUrl!.split("/").pop()}`}
+                      </Link>
+                    )}
                   </View>
                 </View>
               ))}
@@ -349,7 +361,7 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
         )}
 
         {skillGroups.size > 0 && (
-          <View style={[s.wrap, { marginTop: px(48) }]} wrap={false}>
+          <View style={[s.wrap, { marginTop: px(32) }]} wrap={false}>
             <SectionTitle>{t.skills}</SectionTitle>
             <View style={{ borderTopWidth: 0.75, borderTopColor: color.haze }}>
               {[...skillGroups].map(([group, names]) => (
@@ -363,7 +375,7 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
         )}
 
         {c.languages.length > 0 && (
-          <View style={[s.wrap, { marginTop: px(48), width: "60%" }]} wrap={false}>
+          <View style={[s.wrap, { marginTop: px(32), width: "60%" }]} wrap={false}>
             <SectionTitle>{t.languages}</SectionTitle>
             <View style={{ borderTopWidth: 0.75, borderTopColor: color.haze }}>
               {c.languages.map((l) => (
@@ -376,7 +388,7 @@ function CvDocument({ c, lang, qr }: { c: CvContent; lang: Lang; qr: boolean[][]
           </View>
         )}
 
-        <Text style={[s.wrap, s.muted, { marginTop: px(40), fontSize: px(12) }]}>{t.consent}</Text>
+        <Text style={[s.wrap, s.muted, { marginTop: px(28), fontSize: px(12) }]}>{t.consent}</Text>
 
         <View style={[s.footer, { bottom: px(132), color: color.ink }]}>
           <Text>{[me.email, "thoadd.com"].filter(Boolean).join(" · ")}</Text>
